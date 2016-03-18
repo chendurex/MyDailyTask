@@ -1,0 +1,52 @@
+reference:http://javarevisited.blogspot.sg/2011/08/enum-in-java-example-tutorial.html
+
+ 10 Examples of Enum in Java
+-----------------------------------------------------------------------------
+1) Enums in Java are type-safe and has their own namespace. It means your enum will have a type
+ for example under package use_constant and you can not assign any value other than specified in Enum Constants.
+
+2) Enum in Java are reference types like class or interface and you can define constructor,
+ methods and variables inside java Enum which makes it more powerful than Enum in C and C++ as shown in next example of Java Enum type
+
+3)You can specify values of enum constants at the creation time as shown in example under definition_value package
+
+4)Enum constants are implicitly static and final and can not be changed once created. For example, below code of java enum will result in compilation error:
+Currency.PENNY = Currency.DIME;
+The final field EnumExamples.Currency.PENNY cannot be reassigned.
+
+5)Enum in java can be used as an argument on switch statement and with "case:"
+like int or char primitive type. This feature of java enum makes them very useful for switch operations.
+for example under package use_switch
+
+6)Since constants defined inside Enum in Java are final you can safely compare them using "==", the equality operator as shown in following example of  Java Enum:
+Currency usCoin = Currency.DIME;
+if(usCoin == Currency.DIME){
+  System.out.println("enum in java can be compared using ==");
+}
+By the way comparing objects using == operator is not recommended, Always use equals() method or compareTo() method to compare Objects
+If you are not convinced than you should read this article to learn more about pros and cons of comparing two enums using equals() vs == operator in Java
+http://javarevisited.blogspot.sg/2013/04/how-to-compare-two-enum-in-java-equals.html
+
+7)Java compiler automatically generates static values() method for every enum in java. Values() method returns array of Enum constants
+in the same order they have listed in Enum and you can use values() to iterate over values of Enum  in Java as shown for example under iterator_enum package
+
+8)In Java, Enum can override methods also. Let’s see under override_method package
+
+9)Two new collection classes EnumMap and EnumSet are added into collection package to support Java Enum. These classes are a high-performance implementation of Map and Set interface in Java
+ and we should use this whenever there is any opportunity.
+ EnumSet doesn't have any public constructor instead it provides factory methods to create instance e.g. EnumSet.of() methods.
+ This design allows EnumSet to internally choose between two different implementations depending upon the size of Enum constants.
+ If Enum has less than 64 constants than EnumSet uses RegularEnumSet class which internally uses a long variable to store those 64 Enum constants
+ and if Enum has more keys than 64 then it uses JumboEnumSet. See my article the difference between RegularEnumSet and JumboEnumSet for more details.
+
+ 10) You can not create an instance of enums by using new operator in Java because the constructor of Enum in Java can only be private and Enums constants can only be created inside Enums itself.
+
+ 11) An instance of Enum in Java is created when any Enum constants are first called or referenced in code.
+
+ 12)Enum in Java can implement the interface and override any method like normal class It’s also worth noting that Enum in java implicitly implements
+ both Serializable and Comparable interface. Let's see and example of how to implement interface using Java Enum for example under implements_interface package
+
+ 13) You can define abstract methods inside Enum in Java and can also provide a different implementation for different instances of enum in java.  Let’s see an example under define_abstract
+
+
+
