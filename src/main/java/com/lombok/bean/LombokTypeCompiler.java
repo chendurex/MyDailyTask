@@ -15,7 +15,7 @@ public class LombokTypeCompiler {
         private double double__;
         private Character character_;
         private char char__;
-        private Boolean Boolean_;
+        private Boolean isBoolean_;
         private boolean boolean__;
         private Long Long_;
         private long long__;
@@ -27,8 +27,9 @@ public class LombokTypeCompiler {
         private float float__;
         private BigDecimal bigDecimal;
 
-    @java.beans.ConstructorProperties({"string_", "integer_", "int__", "Double_", "double__", "character_", "char__", "Boolean_", "boolean__", "Long_", "long__", "Byte_", "byte__", "Short_", "short__", "Float_", "float__", "bigDecimal"})
-    public LombokTypeCompiler(String string_, Integer integer_, int int__, Double Double_, double double__, Character character_, char char__, Boolean Boolean_, boolean boolean__, Long Long_, long long__, Byte Byte_, byte byte__, Short Short_, short short__, Float Float_, float float__, BigDecimal bigDecimal) {
+
+    @java.beans.ConstructorProperties({"string_", "integer_", "int__", "Double_", "double__", "character_", "char__", "isBoolean_", "boolean__", "Long_", "long__", "Byte_", "byte__", "Short_", "short__", "Float_", "float__", "bigDecimal"})
+    public LombokTypeCompiler(String string_, Integer integer_, int int__, Double Double_, double double__, Character character_, char char__, Boolean isBoolean_, boolean boolean__, Long Long_, long long__, Byte Byte_, byte byte__, Short Short_, short short__, Float Float_, float float__, BigDecimal bigDecimal) {
         this.string_ = string_;
         this.integer_ = integer_;
         this.int__ = int__;
@@ -36,7 +37,7 @@ public class LombokTypeCompiler {
         this.double__ = double__;
         this.character_ = character_;
         this.char__ = char__;
-        this.Boolean_ = Boolean_;
+        this.isBoolean_ = isBoolean_;
         this.boolean__ = boolean__;
         this.Long_ = Long_;
         this.long__ = long__;
@@ -50,10 +51,6 @@ public class LombokTypeCompiler {
     }
 
     public LombokTypeCompiler() {
-    }
-
-    public static LombokTypeCompilerBuilder builder() {
-        return new LombokTypeCompilerBuilder();
     }
 
     public String getString_() {
@@ -84,8 +81,8 @@ public class LombokTypeCompiler {
         return this.char__;
     }
 
-    public Boolean getBoolean_() {
-        return this.Boolean_;
+    public Boolean getIsBoolean_() {
+        return this.isBoolean_;
     }
 
     public boolean isBoolean__() {
@@ -156,8 +153,8 @@ public class LombokTypeCompiler {
         this.char__ = char__;
     }
 
-    public void setBoolean_(Boolean Boolean_) {
-        this.Boolean_ = Boolean_;
+    public void setIsBoolean_(Boolean isBoolean_) {
+        this.isBoolean_ = isBoolean_;
     }
 
     public void setBoolean__(boolean boolean__) {
@@ -221,9 +218,10 @@ public class LombokTypeCompiler {
         if (this$character_ == null ? other$character_ != null : !this$character_.equals(other$character_))
             return false;
         if (this.char__ != other.char__) return false;
-        final Object this$Boolean_ = this.Boolean_;
-        final Object other$Boolean_ = other.Boolean_;
-        if (this$Boolean_ == null ? other$Boolean_ != null : !this$Boolean_.equals(other$Boolean_)) return false;
+        final Object this$isBoolean_ = this.isBoolean_;
+        final Object other$isBoolean_ = other.isBoolean_;
+        if (this$isBoolean_ == null ? other$isBoolean_ != null : !this$isBoolean_.equals(other$isBoolean_))
+            return false;
         if (this.boolean__ != other.boolean__) return false;
         final Object this$Long_ = this.Long_;
         final Object other$Long_ = other.Long_;
@@ -263,8 +261,8 @@ public class LombokTypeCompiler {
         final Object $character_ = this.character_;
         result = result * PRIME + ($character_ == null ? 0 : $character_.hashCode());
         result = result * PRIME + this.char__;
-        final Object $Boolean_ = this.Boolean_;
-        result = result * PRIME + ($Boolean_ == null ? 0 : $Boolean_.hashCode());
+        final Object $isBoolean_ = this.isBoolean_;
+        result = result * PRIME + ($isBoolean_ == null ? 0 : $isBoolean_.hashCode());
         result = result * PRIME + (this.boolean__ ? 79 : 97);
         final Object $Long_ = this.Long_;
         result = result * PRIME + ($Long_ == null ? 0 : $Long_.hashCode());
@@ -289,128 +287,6 @@ public class LombokTypeCompiler {
     }
 
     public String toString() {
-        return "com.lombok.bean.LombokTypeCompiler(string_=" + this.string_ + ", integer_=" + this.integer_ + ", int__=" + this.int__ + ", Double_=" + this.Double_ + ", double__=" + this.double__ + ", character_=" + this.character_ + ", char__=" + this.char__ + ", Boolean_=" + this.Boolean_ + ", boolean__=" + this.boolean__ + ", Long_=" + this.Long_ + ", long__=" + this.long__ + ", Byte_=" + this.Byte_ + ", byte__=" + this.byte__ + ", Short_=" + this.Short_ + ", short__=" + this.short__ + ", Float_=" + this.Float_ + ", float__=" + this.float__ + ", bigDecimal=" + this.bigDecimal + ")";
-    }
-
-    public static class LombokTypeCompilerBuilder {
-        private String string_;
-        private Integer integer_;
-        private int int__;
-        private Double Double_;
-        private double double__;
-        private Character character_;
-        private char char__;
-        private Boolean Boolean_;
-        private boolean boolean__;
-        private Long Long_;
-        private long long__;
-        private Byte Byte_;
-        private byte byte__;
-        private Short Short_;
-        private short short__;
-        private Float Float_;
-        private float float__;
-        private BigDecimal bigDecimal;
-
-        LombokTypeCompilerBuilder() {
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder string_(String string_) {
-            this.string_ = string_;
-            return this;
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder integer_(Integer integer_) {
-            this.integer_ = integer_;
-            return this;
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder int__(int int__) {
-            this.int__ = int__;
-            return this;
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder Double_(Double Double_) {
-            this.Double_ = Double_;
-            return this;
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder double__(double double__) {
-            this.double__ = double__;
-            return this;
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder character_(Character character_) {
-            this.character_ = character_;
-            return this;
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder char__(char char__) {
-            this.char__ = char__;
-            return this;
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder Boolean_(Boolean Boolean_) {
-            this.Boolean_ = Boolean_;
-            return this;
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder boolean__(boolean boolean__) {
-            this.boolean__ = boolean__;
-            return this;
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder Long_(Long Long_) {
-            this.Long_ = Long_;
-            return this;
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder long__(long long__) {
-            this.long__ = long__;
-            return this;
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder Byte_(Byte Byte_) {
-            this.Byte_ = Byte_;
-            return this;
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder byte__(byte byte__) {
-            this.byte__ = byte__;
-            return this;
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder Short_(Short Short_) {
-            this.Short_ = Short_;
-            return this;
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder short__(short short__) {
-            this.short__ = short__;
-            return this;
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder Float_(Float Float_) {
-            this.Float_ = Float_;
-            return this;
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder float__(float float__) {
-            this.float__ = float__;
-            return this;
-        }
-
-        public LombokTypeCompiler.LombokTypeCompilerBuilder bigDecimal(BigDecimal bigDecimal) {
-            this.bigDecimal = bigDecimal;
-            return this;
-        }
-
-        public LombokTypeCompiler build() {
-            return new LombokTypeCompiler(string_, integer_, int__, Double_, double__, character_, char__, Boolean_, boolean__, Long_, long__, Byte_, byte__, Short_, short__, Float_, float__, bigDecimal);
-        }
-
-        public String toString() {
-            return "com.lombok.bean.LombokTypeCompiler.LombokTypeCompilerBuilder(string_=" + this.string_ + ", integer_=" + this.integer_ + ", int__=" + this.int__ + ", Double_=" + this.Double_ + ", double__=" + this.double__ + ", character_=" + this.character_ + ", char__=" + this.char__ + ", Boolean_=" + this.Boolean_ + ", boolean__=" + this.boolean__ + ", Long_=" + this.Long_ + ", long__=" + this.long__ + ", Byte_=" + this.Byte_ + ", byte__=" + this.byte__ + ", Short_=" + this.Short_ + ", short__=" + this.short__ + ", Float_=" + this.Float_ + ", float__=" + this.float__ + ", bigDecimal=" + this.bigDecimal + ")";
-        }
+        return "com.lombok.bean.LombokTypeCompiler(string_=" + this.string_ + ", integer_=" + this.integer_ + ", int__=" + this.int__ + ", Double_=" + this.Double_ + ", double__=" + this.double__ + ", character_=" + this.character_ + ", char__=" + this.char__ + ", isBoolean_=" + this.isBoolean_ + ", boolean__=" + this.boolean__ + ", Long_=" + this.Long_ + ", long__=" + this.long__ + ", Byte_=" + this.Byte_ + ", byte__=" + this.byte__ + ", Short_=" + this.Short_ + ", short__=" + this.short__ + ", Float_=" + this.Float_ + ", float__=" + this.float__ + ", bigDecimal=" + this.bigDecimal + ")";
     }
 }
