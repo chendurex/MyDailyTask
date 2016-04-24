@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	scan:当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。
+	scanPeriod:设置监测配置文件是否有修改的时间间隔，单位，包括： milliseconds、 seconds、 minutes 和 hours。
+	                               如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。
+	debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false
+ -->
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+	<!-- 每个logger都关联到logger上下文，默认上下文名称为“default”。但可以使用<contextName>设置成其他名字，用于区分不同应用程序的记录。一旦设置，不能修改。 -->
+	<contextName>myAppName</contextName>
+	<!-- 负责写日志的组件 -->
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 -->
+		<!-- 它根据时间来制定滚动策略，既负责滚动也负责出发滚动 -->
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- 滚动命名策略 -->
+			<fileNamePattern>testFile.%d{yyyy-MM-dd_HH-mm}.%i.log.zip</fileNamePattern>
+			<!-- 控制保留的归档文件的最大数量，超出数量就删除旧文件。假设设置每个月滚动，且 <maxHistory>是6，则只保存最近6个月的文件，删除之前的旧文件。注意，删除旧文件是，那些为了归档而创建的目录也会被删除 -->
+			<maxHistory>5</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<!-- 最大存储空间，超过这个设置内存的自动重新生成日志文件 -->
+				<maxFileSize>1kB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<!-- 负责两件事，一是把日志信息转换成字节数组，二是把字节数组写入到输出流 -->
+		<encoder>
+			<pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="STDOUT"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>
+			[date]:%date{yyyy-MM-dd HH:mm:ss.SSS},[logUseTime]:%-4relative ms,[contextName]:%contextName,[thread]:[%t],[level]:%-5level,[class]:%logger,[caller]:%caller{1} 
+			- %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	<!-- 
+		 name:必须唯一, 用来指定受此logger约束的某一个包或者具体的某一个类，
+		   	     如com.shiro.logback则只打印com.shiro.logback下的日志
+		 level日志等级 ：用来设置打印级别，大小写无关：
+		 	  TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF
+		 	      还有一个特俗值INHERITED或者同义词NULL，代表强制执行上级的级别。
+			      如果未设置此属性，那么当前logger将会继承上级的级别。如：继承当前父类root的level
+		 additivity:是否向上级logger传递打印信息。默认是true。
+		 			如果改为false，则当前日志只会打印到对应的logger，
+		 			否则会打印到所有父类，如root就是所有日志的顶级父类，导致日志重复输出
+		 			我们可以在测试时候开启在控制台，保证所有的日志在控制台打印
+		   <logger>可以包含零个或多个<appender-ref>元素，标识这个appender将会添加到这个logger。
+		   			如：打印到FILE和打印到控制台
+	-->
+	<logger name="com.shiro.logback" level="info" additivity="true">
+		 <!-- <appender-ref ref="FILE"/> -->
+		<!-- <appender-ref ref="STDOUT" /> -->
+	</logger>
+	<!-- 
+		name：根logger name已经确定为ROOT，所有logger的顶级父类
+		level：默认debug
+		如果logger被设置为additivity="true"或者未设置additivity
+			则会在ROOT logger打印日志，打印级别跟logger有关
+		如果logger未被其它定义的日志捕获，则会在root logger打印日志，
+			打印级别跟ROOT logger有关
+		logger捕捉的方式为：LoggerFactory.getLogger(xxx.class)则传递的是xxx.class全限定名;
+		如果为字符串定义的则传入是字符串定义的名称	
+	-->
+	<root level="info">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>
