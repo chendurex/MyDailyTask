@@ -1,9 +1,12 @@
 package com.jvm.out_of_memory_error;
 
 import org.junit.Test;
+import sun.misc.Unsafe;
 import sun.net.www.protocol.jar.URLJarFile;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -12,7 +15,7 @@ import java.util.jar.JarEntry;
 
 /**
  * 内存溢出
- * vmArgs -Xmx10m -Xms10m -Xmn5m -XX:PermSize=5m -XX:MaxPermSize=5m -XX:SurvivorRatio=8 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=c:\temp\ -XX:+PrintGCDetails
+ * vmArgs -Xmx10m -Xms10m -Xmn5m -XX:PermSize=5m -XX:MaxPermSize=5m -XX:SurvivorRatio=8 -XX:MaxDirectMemorySize=2m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=c:\temp\ -XX:+PrintGCDetails
  */
 public class OutOfMemoryError {
 
@@ -47,7 +50,7 @@ public class OutOfMemoryError {
     /**
      * 栈溢出 递归调用达到栈的最大深度
      */
-    @Test
+    //@Test
     public void StackOverflowError() {
         StackOverflowError();
     }
@@ -69,6 +72,21 @@ public class OutOfMemoryError {
                 }
             }
         }
+    }
+
+    /**
+     * DirectMemory 默认不指定则跟java堆最大值相等 当然也受限于本身电脑内存
+     * 指定MaxDirectMemorySize=2m
+     * @throws Exception
+     */
+    @Test
+    public void directBufferOutOfMemoryError() throws Exception{
+        ByteBuffer.allocateDirect(2 * 1024 * 1024);
+        // 下面使用unsafe类分配内存，则只受限于电脑内存
+        /*Field field = Unsafe.class.getDeclaredFields()[0];
+        field.setAccessible(true);
+        Unsafe unsafe = (Unsafe)field.get(new Object());
+        unsafe.allocateMemory(100 * 1024 * 1024);*/
     }
 
 }
