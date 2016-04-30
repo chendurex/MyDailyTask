@@ -46,7 +46,7 @@ public class NamesIterator<T>{
     }
 
     public Iterator<T> iterator() {
-        return new NamesIter();
+        return new NamesIter<>();
     }
 
     private class NamesIter<T> implements Iterator<T>{

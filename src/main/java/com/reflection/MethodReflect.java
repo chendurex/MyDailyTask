@@ -20,7 +20,7 @@ public class MethodReflect {
             method.setAccessible(true);
             if (method.getName().indexOf("say") != -1) {
                 if( method.getParameterTypes().length == 0) {
-                    method.invoke(obj,null);
+                    method.invoke(obj,new Object[]{});
                 } else if (method.getParameterTypes().length == 1) {
                     method.invoke(obj,"hello");
                 }

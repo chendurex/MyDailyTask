@@ -1,9 +1,7 @@
 package com.reflection;
 
-import javafx.animation.KeyValue;
 import org.junit.Test;
 
-import javax.lang.model.type.PrimitiveType;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 
