@@ -26,7 +26,7 @@ public class Executor {
     void execute() {
         DataAccessor dataAccessor = new DataAccessor();
 
-        for (int i = 0; i < 1000; i++) {
+        for (;;) {
             dataAccessor.getData(generateKey());
             sleep();
         }

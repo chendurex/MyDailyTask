@@ -63,6 +63,21 @@
                 </compilerArgs>
             </configuration>
         </plugin>
+        <!--构建可执行jar-->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>2.4</version>
+            <configuration>
+                <archive>
+                    <manifest>
+                        <addClasspath>true</addClasspath>
+                        <classpathPrefix>lib/</classpathPrefix>
+                        <mainClass>com.jvm.btrace.Main</mainClass>
+                    </manifest>
+                </archive>
+            </configuration>
+        </plugin>
         <!--生成源码插件-->
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>

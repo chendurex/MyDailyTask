@@ -11,17 +11,9 @@ import com.sun.btrace.BTraceUtils.Aggregations;
 import com.sun.btrace.BTraceUtils.Strings;
 import com.sun.btrace.aggregation.Aggregation;
 import com.sun.btrace.aggregation.AggregationFunction;
-import com.sun.btrace.annotations.BTrace;
-import com.sun.btrace.annotations.Duration;
+import com.sun.btrace.annotations.*;
 import com.sun.btrace.annotations.Export;
-import com.sun.btrace.annotations.Kind;
-import com.sun.btrace.annotations.Location;
-import com.sun.btrace.annotations.OnMethod;
-import com.sun.btrace.annotations.OnTimer;
-import com.sun.btrace.annotations.ProbeClassName;
-import com.sun.btrace.annotations.ProbeMethodName;
-import com.sun.btrace.annotations.Property;
-import com.sun.btrace.annotations.TargetMethodOrField;
+
 
 // @BTrace means that this class will be used to define probes
 // and actions. All fields and methods must be static.
@@ -95,7 +87,7 @@ public class CacheMonitorBTrace {
     @OnMethod(clazz = "com.jvm.btrace.DataAccessor",
             method = "getData",
             location = @Location(value = Kind.NEW,
-                    clazz = "com.piotrnowicki.btrace.Data"))
+                    clazz = "com.jvm.btrace.Data"))
     public static void dataCreated() {
         dataCreated++;
     }
