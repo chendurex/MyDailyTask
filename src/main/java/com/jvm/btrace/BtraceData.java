@@ -3,12 +3,11 @@ package com.jvm.btrace;
 import lombok.Data;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Administrator on 2016/5/2.
  */
-@lombok.Data
+@Data
 public class BtraceData {
     private String name;
     private Integer age;

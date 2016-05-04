@@ -1,4 +1,4 @@
-package com.jvm.btrace;
+package com.jvm.btrace.safe_mode;
 
 import static com.sun.btrace.BTraceUtils.*;
 

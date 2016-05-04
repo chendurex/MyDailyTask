@@ -1,10 +1,11 @@
-package com.jvm.btrace;
+package com.jvm.btrace.safe_mode;
 
 import static com.sun.btrace.BTraceUtils.*;
 import com.sun.btrace.annotations.*;
 
 /**
  * TargetMethodOrField 注解打印方法内部调用某个方法的详细信息
+ * 如下面的例子：监控BtraceData类中，所有方法中，内部调用了HashMap.get 的方法信息
  */
 @BTrace
 public class TargetMethodOrFieldDemo {
