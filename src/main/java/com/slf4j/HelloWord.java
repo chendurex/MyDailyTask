@@ -1,5 +1,6 @@
 package com.slf4j;
 
+import ch.qos.logback.classic.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -31,5 +32,9 @@ public class HelloWord {
         }catch (Exception e) {
             logger.error( "Failed to obtain JDBC connection", e);
         }
+        // 设置某个类的level
+        ch.qos.logback.classic.Logger logger1 = (ch.qos.logback.classic.Logger)logger;
+        logger1.setLevel(Level.INFO);
+        logger1.info("test");
     }
 }
