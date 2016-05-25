@@ -1,0 +1,28 @@
+/**
+ // doLast表示最后执行，因为任务有依赖或者有生命周期会影响当前任务
+ task hello {
+ doLast {
+ println 'Hello world!'
+ }
+ }
+ // 在hello任务后追加任务
+ hello.doLast {
+    println 'Hello world!'
+ }
+ // 或者采用下面方法也是表示最后执行
+ task hello <<{
+    println 'Hello world!'
+ }
+ // compileTest任务依赖compile任务
+ task compileTest(dependsOn: compile) << {
+    println 'compiling unit tests'
+ }
+ // test3任务依赖多个任务
+ task test3 (dependsOn: [compile, compileTest3333,test]) << {
+    println 'all project test'
+ }
+ // 定义一个任务，打印依赖周期为compile的所有jar
+ task listJars << {
+    configurations.compile.each { File file -> println file.name }
+ }
+ */

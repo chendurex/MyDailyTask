@@ -1,0 +1,155 @@
+group 'com.dayhr'
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'idea'
+version = '1.0.0-SNAPSHOT'
+
+// 多模块时依赖子模块
+dependencies {
+    compile project(':sub')
+    //compile project(':dayhr-time-dubbo')
+}
+// 所有的构建都放在父项目，子目录只负责下载自己的依赖
+allprojects  {
+
+    apply plugin: 'maven'
+    group = 'com.dayhr'
+    version = '1.0.0-SNAPSHOT'
+    repositories {
+        //mavenLocal() // maven本地仓库
+        maven { url "http://192.168.1.153:8081/nexus/content/groups/public/" }
+        //maven { url "http://repo.maven.apache.org/maven2" }
+        //jcenter()   //使用jcenter
+        //mavenCentral()  // 使用中央仓库
+    }
+    // 打印在什么地方下载的依赖
+    repositories.each {
+        println it.getUrl()
+    }
+
+    configurations.all {
+        // 在build的时候自动更新快照
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+        resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+    }
+    // 配置ftp上传，并开启连接ssh执行ssh命令
+    configurations {
+        ftpAntTask
+        sshAntTask
+    }
+
+    dependencies{
+        ftpAntTask("org.apache.ant:ant-commons-net:1.8.4") {
+            module("commons-net:commons-net:1.4.1") {
+                dependencies "oro:oro:2.0.8:jar"
+            }
+        }
+        sshAntTask 'org.apache.ant:ant-jsch:1.9.6','com.jcraft:jsch:0.1.50'
+    }
+
+
+    ext{
+        // 定义编译的JDK版本
+        serverIP = "192.168.1.111"
+        // daydev/f3tldf
+        userName = "root"
+        userPwd = "123456"
+        cmdPath = "sh /usr/devpro/bin/dayhr dev restart"
+        ftpName = "app_dev"
+        ftpPwd = "123"
+        remoteLibDir = "/ROOT/WEB-INF/lib/" // 服务器上jar包目录
+        preClean = "sh /usr/devpro/bin/predel "+project.name
+
+        repoUrl = "http://192.168.1.111:8081/nexus/content/repositories/snapshots/"
+        repoUserName = "admin"
+        repoPasswd = "admin123"
+    }
+
+    ant{
+        taskdef(name: 'ftp',
+                classname: 'org.apache.tools.ant.taskdefs.optional.net.FTP',
+                classpath: configurations.ftpAntTask.asPath)
+
+        taskdef(name: 'sshexec',
+                classname: 'org.apache.tools.ant.taskdefs.optional.ssh.SSHExec',
+                classpath: configurations.sshAntTask.asPath)
+    }
+
+}
+
+subprojects {
+    apply plugin: 'java'
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
+    compileJava {
+        options.encoding = 'utf-8'
+        options.define compilerArgs: [
+                '-source', sourceCompatibility,
+                '-target', targetCompatibility
+        ]
+    }
+
+    sourceSets{
+        main{
+            resources {
+                srcDir 'src/build/java'
+            }
+        }
+    }
+    // 打包jar
+    jar{
+        manifest {
+            attributes 'build-date': new Date().format('yyyy-MM-dd HH:mm:ss')
+        }
+        excludes = ['properties/**','spring/**','springmvc/**','*.properties']
+    }
+    // 生成源码jar包
+    task sourcesJar(type: Jar, dependsOn: [classes]) {
+        classifier = 'sources'
+        from sourceSets.main.java
+        from sourceSets.main.resources
+        manifest = jar.manifest
+        // 不打包配置文件
+        excludes = ['properties/**','spring/**','springmvc/**','*.properties']
+    }
+
+    // 打源码包
+    artifacts {
+        archives sourcesJar
+    }
+
+    // 发布到中央仓库
+    uploadArchives {
+        repositories.mavenDeployer {
+            repository(url: repoUrl) {
+                authentication(userName: repoUserName, password: repoPasswd)
+            }
+        }
+    }
+
+    task uploadJar(dependsOn: build) {
+        doLast{
+            ant {
+                sshexec(host: serverIP, username: userName, trust: "yes", password: userPwd, command: preClean) {
+                    println "删除服务器上的jar包 ......" + preClean
+                }
+
+                ftp(server: serverIP, userid: ftpName, password: ftpPwd, remoteDir: remoteLibDir) {
+                    println "通过ftp同步更新服务器上的jar包 ......"
+                    fileset(dir: 'build/libs', excludes:"***sources.jar")
+                }
+            }
+        }
+    }
+}
+
+task restart(dependsOn: subprojects.uploadJar){
+    doLast {
+        ant{
+            sshexec(host: serverIP, username: userName, trust: "yes", password: userPwd,  command: cmdPath){
+                println "重启服务器 tomcat 服务 ......"
+            }
+        }
+    }
+}
