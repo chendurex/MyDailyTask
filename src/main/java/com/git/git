@@ -1,0 +1,8 @@
+// 将代码添加到提交列表
+git add src/main/java
+// 提交代码
+git commit -m "gradle doc"
+// 将代码提交到git
+git push
+// 查看git的状态，可以查看到未提交的，已修改，等待提交的代码
+git status
