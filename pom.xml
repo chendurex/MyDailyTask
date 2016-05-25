@@ -16,6 +16,8 @@
         <logback.version>1.1.3</logback.version>
         <junit.version>4.12</junit.version>
         <btrace.version>1.2.3</btrace.version>
+        <asm.version>5.1</asm.version>
+        <cglib.version>3.2.2</cglib.version>
     </properties>
     <dependencies>
         <dependency>
@@ -43,6 +45,22 @@
             <artifactId>btrace-boot</artifactId>
             <version>${btrace.version}</version>
         </dependency>
+       <!-- <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-all</artifactId>
+            <version>${asm.version}</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-debug-all</artifactId>
+            <version>${asm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>${cglib.version}</version>
+        </dependency>
+
     </dependencies>
 
 
@@ -78,17 +96,38 @@
                 </archive>
             </configuration>
         </plugin>
+        <!-- 打包过程忽略Junit测试 -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.17</version>
+            <configuration>
+                <skip>true</skip>
+            </configuration>
+        </plugin>
         <!--生成源码插件-->
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
             <version>2.1.2</version>
-            <executions>
+            <!--<executions>
                 <execution>
                     <id>attach-sources</id>
                     <phase>verify</phase>
                     <goals>
                         <goal>jar-no-fork</goal>
+                    </goals>
+                </execution>
+            </executions>-->
+            <configuration>
+                <attach>true</attach>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>releases</id>
+                    <phase>compile</phase>
+                    <goals>
+                        <goal>jar</goal>
                     </goals>
                 </execution>
             </executions>
@@ -136,7 +175,38 @@
                 </execution>
             </executions>
         </plugin>-->
-
+        <!--
+            设置resouce目录下的所有文件编码，否则如果配置xml文件中有中文字符，部署后可能会引起运行失败
+             设置打包项目中的xml文件，如mybatis文件
+         -->
+        <!--<plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>2.6</version>
+            <executions>
+                <execution>
+                    <id>copy-xml</id>
+                    <phase>process-sources</phase>
+                    <goals>
+                        <goal>copy-resources</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${basedir}/target/classes</outputDirectory>
+                        <resources>
+                            <resource>
+                                <directory>${basedir}/src/build/java</directory>
+                                <includes>
+                                    <include>**/*.xml</include>
+                                </includes>
+                            </resource>
+                        </resources>
+                    </configuration>
+                </execution>
+            </executions>
+            <configuration>
+                <encoding>UTF-8</encoding>
+            </configuration>
+        </plugin>-->
     </plugins>
 </build>
 </project>
