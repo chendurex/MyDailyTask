@@ -1,9 +1,27 @@
 /**
- gradle 依赖的四个生命周期
- compile 该依赖对于编译发行是必须的
- runtime 该依赖对于运行时是必须的
- testCompile 该依赖对于编译测试是必须的
- testRuntime 该依赖对于运行时测试是必须的
+ gradle2.13版本新添加的,由java插件提供,适用于编译期需要而不需要打包的情况
+ provided
+
+ war插件提供的范围类型:与compile作用类似,但不会被添加到最终的war包中这是由于编译、测试阶段代码需要依赖此类jar包，而运行阶段容器已经提供了相应的支持，所以无需将这些文件打入到war包中了;例如Servlet API就是一个很明显的例子.
+ providedCompile
+
+ 编译范围依赖在所有的classpath中可用，同时它们也会被打包。
+ compile
+
+ 同proiveCompile类似。
+ providedRuntime
+
+ runtime依赖在运行和测试系统的时候需要，但在编译的时候不需要。比如，你可能在编译的时候只需要JDBC API JAR，而只有在运行的时候才需要JDBC驱动实现。
+ runtime
+
+ 测试期编译需要的附加依赖
+ testCompile
+
+ 测试运行期需要
+ testRuntime
+
+ 配置默认依赖范围
+ default
 
  gradle 默认的打包文件目录
  compileJava 打包src/main/java目录
@@ -116,18 +134,18 @@
  dependencies {
      // 依赖dayhr-web-time项目
      compile project(':web-time')
-
+ 	def springVersion = "3.2.4.RELEASE"
      // map映射的方式
-     runtime group: 'org.springframework', name: 'spring-core', version: '2.5'
+     runtime group: 'org.springframework', name: 'spring-core', version: '${springVersion}'
 
      // 直接按照规定的方式 group:name:version
-     runtime 'org.springframework:spring-core:2.5',
-            'org.springframework:spring-aop:2.5'
+     runtime 'org.springframework:spring-core:${springVersion}',
+            'org.springframework:spring-aop:${springVersion}'
 
      // 数据的方式
      runtime(
-     [group: 'org.springframework', name: 'spring-core', version: '2.5'],
-     [group: 'org.springframework', name: 'spring-aop', version: '2.5']
+     [group: 'org.springframework', name: 'spring-core', version: '${springVersion}'],
+     [group: 'org.springframework', name: 'spring-aop', version: '${springVersion}']
     )
 
      // 显示的声明依赖一个本地jar

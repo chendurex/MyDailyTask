@@ -1,0 +1,42 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = "com.Sayer"
+//仓库
+repositories {
+    mavenRepo url: "http://repo.maven.apache.org/maven2"
+}
+//依赖,为了确定依赖都打入jar包,这里随便添加了一个dom4j
+dependencies {
+    compile  "dom4j:dom4j:1.6.1"
+}
+//打包
+task runnbaleJar(type: Jar) {
+    from files(sourceSets.main.output.classesDir)
+    from configurations.runtime.asFileTree.files.collect { zipTree(it) }
+
+    manifest {
+        attributes 'Main-Class': 'com.Sayer'
+    }
+}
+//设置编码
+tasks.withType(Compile) {
+    options.encoding = "UTF-8"
+}
+
+
+
+// 或者采用第三方插件的形式
+apply plugin: 'executable-jar'
+
+// This is the class that starts your application
+mainClass = 'the.class.that.has.Main'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'net.nisgits.gradle:gradle-executable-jar-plugin:master-REL-6'
+    }
+}
