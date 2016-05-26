@@ -1,7 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'application'
+version = 'web-test-1.0.1-SNAPSHOT'
+buildDir = 'target'
 
-mainClassName = "com.Sayer"
 //仓库
 repositories {
     mavenRepo url: "http://repo.maven.apache.org/maven2"
@@ -9,19 +10,41 @@ repositories {
 //依赖,为了确定依赖都打入jar包,这里随便添加了一个dom4j
 dependencies {
     compile  "dom4j:dom4j:1.6.1"
-}
-//打包
-task runnbaleJar(type: Jar) {
-    from files(sourceSets.main.output.classesDir)
-    from configurations.runtime.asFileTree.files.collect { zipTree(it) }
-
-    manifest {
-        attributes 'Main-Class': 'com.Sayer'
-    }
+    // 加载本地jar
+    providedCompile fileTree(dir: 'WebRoot/WEB-INF/lib', include: '*.jar')
 }
 //设置编码
-tasks.withType(Compile) {
+tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
+}
+
+// gradle 默认的项目结构是src/main/java src/main/resources src/test/java src/test/resources
+// 如果不是按照默认的项目结构则需要自己手动指定项目路径与资源路径
+//定义目录结构
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+}
+// 执行构建可执行jar，这里需要依赖classes先编译java文件，不然拿不到编译后的文件
+task runnableJar(type: Jar,dependsOn : [classes]) {
+    // 打包源文件，如果不需要源文件则不需要包含
+    from files(sourceSets.main.java.srcDirs)
+    // 打包编译后的class文件
+    from files(sourceSets.main.output.classesDir)
+    // 打包资源文件
+    from files(sourceSets.main.resources)
+    // 指定MANIFEST文件，可以自己随意设置属性，只要包含一个Main-Class即可
+    manifest {
+        attributes = ['Manifest-Version':version,
+                      'build-date': new Date().format('yyyy-MM-dd HH:mm:ss'),
+                      'Main-Class': 'com.hr.Main']
+    }
 }
 
 
