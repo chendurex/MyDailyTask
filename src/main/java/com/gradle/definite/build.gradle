@@ -201,4 +201,8 @@
      }
  }
 
+// 查看gradle仓库缓存目录
+ windows: echo %GRADLE_USER_HOME%
+ linux: echo $GRADLE_USER_HOME
+ 如果没有。。就是在 ~/.gradle
  */
