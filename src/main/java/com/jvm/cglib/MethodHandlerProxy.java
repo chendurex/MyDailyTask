@@ -15,8 +15,12 @@ import java.lang.reflect.Method;
 public class MethodHandlerProxy {
 
 
+    /**
+     * 所有的方法都是返回同一个值
+     * 注意，因为这里返回的是是Object对象，但是实际填充的是任意值会导致类型转换失败
+     */
     @Test
-    public void testFixedValue() throws Exception{
+    public void testFixedValue() {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(SampleClass.class);
         enhancer.setCallback(new FixedValue() {
@@ -155,7 +159,7 @@ public class MethodHandlerProxy {
     }
 
     /**
-     * The NoOp class does not what its name suggests. Instead, it delegates each method call to the enhanced class's method implementation
+     * 返回CGLIB生成的单例对象
      */
     @Test
     public void testNoOp() {
@@ -163,8 +167,8 @@ public class MethodHandlerProxy {
         enhancer.setSuperclass(SampleClass.class);
         enhancer.setCallback(new NoOp() {});
         SampleClass sampleClass = (SampleClass)enhancer.create();
+        System.out.println(sampleClass);
         sampleClass.setName("chen");
         System.out.println(sampleClass.test("test"));
-
     }
 }
