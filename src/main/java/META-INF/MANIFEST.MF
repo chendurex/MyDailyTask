@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
+Can-Redefine-Classes: true Premain-Class: com.jvm.instrument.HotAgent
 Main-Class: com.jvm.btrace.Main
 
