@@ -1,0 +1,5 @@
+rootProject.name = 'dayhr-time'
+include 'sub'
+//include 'dayhr-time-service'
+//include 'dayhr-time-dubbo'
+

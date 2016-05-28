@@ -1,0 +1,208 @@
+/**
+ gradle2.13版本新添加的,由java插件提供,适用于编译期需要而不需要打包的情况
+ provided
+
+ war插件提供的范围类型:与compile作用类似,但不会被添加到最终的war包中这是由于编译、测试阶段代码需要依赖此类jar包，而运行阶段容器已经提供了相应的支持，所以无需将这些文件打入到war包中了;例如Servlet API就是一个很明显的例子.
+ providedCompile
+
+ 编译范围依赖在所有的classpath中可用，同时它们也会被打包。
+ compile
+
+ 同proiveCompile类似。
+ providedRuntime
+
+ runtime依赖在运行和测试系统的时候需要，但在编译的时候不需要。比如，你可能在编译的时候只需要JDBC API JAR，而只有在运行的时候才需要JDBC驱动实现。
+ runtime
+
+ 测试期编译需要的附加依赖
+ testCompile
+
+ 测试运行期需要
+ testRuntime
+
+ 配置默认依赖范围
+ default
+
+ gradle 默认的打包文件目录
+ compileJava 打包src/main/java目录
+ processResources 打包 src/main/resources目录
+ compileTestJava 打包src/test/java目录
+ processTestResources 打包src/test/resources目录
+
+ //解决警告：编码 GBK 的不可映射字符
+ //指定UTF-8编码
+ //方法1
+ tasks.withType(JavaCompile) {
+     options.encoding = "UTF-8"
+ }
+ //方法2
+ [ compileJava, compileTestJava ]*.options*.encoding = 'UTF-8'
+ // 方法3
+ //此法不仅可以解决中文注释引起的编译不通过乱码，而且对于项目中存在中文文件导致的乱码也可以解决
+ //调用命令的时候添加-D参数 ，-Dfile.encoding=UTF-8
+ // 方法4 在gradle.properties加入
+ systemProp.file.encoding=UTF-8
+
+ // 使用多仓库
+ repositories {
+ mavenLocal() //使用Maven本地缓存
+ jcenter() //使用jcenter
+ mavenCentral() //使用中央仓库
+
+ maven {
+     url "http://maven.oschina.net/content/groups/public/"  //使用开源中国的maven库
+     name = "开源中国的maven库"
+ }
+
+ maven { url"https://repo.spring.io/libs-release" } //使用spring的maven库,name是可选的 我也可以不指定name
+
+ //使用maven仓库，如果需要账号密码则填写账号密码
+ maven {
+     url 'http://my.server/'
+     credentials {
+         username = 'username'
+         password = 'password'
+    }
+ }
+ //使用ivy仓库
+ ivy {
+    artifactPattern '/some/dir/[organisation]/[module]-[revision].[ext]'
+ }
+
+ //使用文件夹做仓库
+ flatDir name: 'libs', dirs: "$projectDir/libs"
+ //指定多个文件夹
+ flatDir {
+     dirs '../project-files', '/volumes/shared-libs'
+     name = '这个也是可以指定name的'
+ }
+ }
+
+ // 依赖排除
+ dependencies {
+ // 方法1. 使用@jar 表示指定下载jar文件，这样就不会传递的依赖
+ compile 'group:artifact:version@jar'
+
+ // 方法2 . 不需要传递依赖
+ compile('group:artifact:version') {
+    transitive = false
+ }
+ // 方法2的另外一种写法
+ compile group: 'g', name: 'a, version:'v', transitive: false
+ // 方法3
+ compile('group:artifact:version') {
+    exclude 'org.slf4j:slf4j-api'
+ }
+ //方法4 . 全局禁止依赖传递
+ configurations {
+    all*.transitive = false
+ }
+ //方法5 . 全局禁止部分依赖传递
+ configurations {
+ 	all*.exclude group: 'group'
+ }
+ }
+
+ configurations.all {
+ // 有版本冲突的时候强制使用指定的版本，对于相关依赖也同样有效
+ resolutionStrategy.force(
+ "org.springframework:spring-core:4.1.6",
+ )
+ // 每次执行build的时候检查更新快照
+ resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+ }
+
+ // 全局配置，对所有工程有效
+ allprojects {
+     apply plugin: "java"
+     apply plugin: "idea"
+     apply plugin: "maven"
+
+     group = 'com.test'
+     version = '1.0.0-SNAPSHOT'
+     // 全局属性设置
+     ext {
+         junitVersion = "4.11"
+         // java文件编码方式设置为utf-8
+         compileJava.options.encoding = 'UTF-8'
+         compileTestJava.options.encoding = 'UTF-8'
+     }
+ }
+
+
+ // 设置依赖的方式，以下方式都行
+ dependencies {
+     // 依赖dayhr-web-time项目
+     compile project(':web-time')
+ 	def springVersion = "3.2.4.RELEASE"
+     // map映射的方式
+     runtime group: 'org.springframework', name: 'spring-core', version: '${springVersion}'
+
+     // 直接按照规定的方式 group:name:version
+     runtime 'org.springframework:spring-core:${springVersion}',
+            'org.springframework:spring-aop:${springVersion}'
+
+     // 数据的方式
+     runtime(
+     [group: 'org.springframework', name: 'spring-core', version: '${springVersion}'],
+     [group: 'org.springframework', name: 'spring-aop', version: '${springVersion}']
+    )
+
+     // 显示的声明依赖一个本地jar
+     compile files('hibernate.jar', 'libs/spring.jar')
+
+     // 显式声明依赖一个libs树，包括所有的*.jar ，排除所有的*.properties文件
+     runtime fileTree(dir: 'libs', include: '*.jar',excludes:'*.properties')
+
+    // 显示的声明依赖一个本地jar目录
+     compile fileTree('libs')
+
+     runtime('org.hibernate:hibernate:3.0.5') {
+            transitive = true
+     }
+     // 继续往后追加属性
+     runtime group: 'org.hibernate', name: 'hibernate', version: '3.0.5', transitive: true
+     runtime(group: 'org.hibernate', name: 'hibernate', version: '3.0.5') {
+     transitive = true //是否进行依赖传递
+     }
+ }
+ // 单独为某个依赖设置属性
+ dependencies {
+ compile('org.hibernate:hibernate:3.1') {
+     // 强制指定版本号，假如有几个hibernate版本，默认会使用最高的版本号，则需要强制指定这个版本号
+     // 此处跟maven不一样，maven是采用就近原则，直接声明的依赖>间接依赖>多次的传递依赖
+     force = true
+
+     // 排除cglib依赖，针对gradle的name而言，相当于maven的artifactId
+     exclude module: 'cglib' //by artifact name
+     // 排除org.jmock整个group依赖
+     exclude group: 'org.jmock' //by group
+     // 排除group为org.unwanted,artifactId为iAmBuggy依赖
+     exclude group: 'org.unwanted', module: 'iAmBuggy' //by both name and group
+
+     //关闭传递性依赖，这样仅下载当前jar，不会进行依赖传递下载
+     transitive = false
+ }
+ }
+
+
+ // 自定义项目目录结构
+ sourceSets {
+     main {
+     java {
+        srcDirs = ['src/xxx/java']
+     }
+     //同时把resource指向了java目录 这样就可以收录java目录中的资源文件了
+     //注意：gradle会以你指定的目录为根 去寻找当前目录以及子目录下的资源文件
+     //如果你想带路径复制 最好不要指定到具体的子包（如:src/main/java/mybatis/mapper/module） 不然资源会位于根目录下
+     resources {
+        srcDirs = ['src/xxx/resources','src/xxx/java']
+     }
+     }
+ }
+
+// 查看gradle仓库缓存目录
+ windows: echo %GRADLE_USER_HOME%
+ linux: echo $GRADLE_USER_HOME
+ 如果没有。。就是在 ~/.gradle
+ */
