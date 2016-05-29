@@ -22,7 +22,7 @@ public class OutOfMemoryError {
     /**
      * 大对象申请不到空间溢出
      */
-    //@Test
+    //@MonitorAssign
     public void HeapOutOfMemoryError() {
         byte[] bufOne = new byte[1024 * 1024 * 4];
         byte[] bufTwo = new byte[1024 * 1024 * 4];
@@ -34,7 +34,7 @@ public class OutOfMemoryError {
      * 1.7 将常量池移入到heap区域，所以显示的是heap 溢出
      * 若是1.6则显示 java.lang.OutOfMemoryError: PermGen space
      */
-    //@Test
+    //@MonitorAssign
     public void constantsPoolOutOfMemeryError() {
         long i = 0;
         String a = "";
@@ -50,14 +50,14 @@ public class OutOfMemoryError {
     /**
      * 栈溢出 递归调用达到栈的最大深度
      */
-    //@Test
+    //@MonitorAssign
     public void StackOverflowError() {
         StackOverflowError();
     }
     /**
      * 永久代存储的是类信息，只要加载无限多的类则永久代溢出
      */
-    //@Test
+    //@MonitorAssign
     public void permGenOutOfMemoryError() throws Exception{
         URLJarFile urlJarFile = new URLJarFile(new File("C:\\Program Files\\Java\\jdk1.7.0_71\\jre\\lib\\rt.jar"));
         Enumeration<JarEntry> jarEntry = urlJarFile.entries();
