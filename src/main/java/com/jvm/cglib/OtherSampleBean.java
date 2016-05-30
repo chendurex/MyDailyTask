@@ -6,7 +6,7 @@ package com.jvm.cglib;
  * @pachage com.jvm.cglib
  * @date 2016/5/25 9:13
  */
-public class SampleClass {
+public class OtherSampleBean {
     private String name;
     private Integer age;
 
@@ -25,5 +25,9 @@ public class SampleClass {
 
     public Integer getAge() {
         return age;
+    }
+
+    public String getName() {
+        return name;
     }
 }

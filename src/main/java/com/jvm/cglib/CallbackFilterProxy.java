@@ -16,14 +16,14 @@ public class CallbackFilterProxy {
     @Test
     public void test() {
         Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(SampleClass.class);
+        enhancer.setSuperclass(SampleBean.class);
         enhancer.setCallback(new MethodInterceptor() {
             @Override
             public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
                 return proxy.invokeSuper(obj,args);
             }
         });
-        CallbackHelper callbackHelper = new CallbackHelper(SampleClass.class, new Class[0]) {
+        CallbackHelper callbackHelper = new CallbackHelper(SampleBean.class, new Class[0]) {
             @Override
             protected Object getCallback(Method method) {
                 if (method.getDeclaringClass() != Object.class && method.getReturnType() == String.class) {
@@ -40,10 +40,10 @@ public class CallbackFilterProxy {
         };
         enhancer.setCallbackFilter(callbackHelper);
         enhancer.setCallbacks(callbackHelper.getCallbacks());
-        SampleClass sampleClass = (SampleClass)enhancer.create();
-        Assert.assertEquals(sampleClass.test("Hello cglib!"),"Hello cglib!");
-        sampleClass.setAge(1);
-        System.out.println(sampleClass.getAge());
+        SampleBean sampleBean = (SampleBean)enhancer.create();
+        Assert.assertEquals(sampleBean.test("Hello cglib!"),"Hello cglib!");
+        sampleBean.setAge(1);
+        System.out.println(sampleBean.getAge());
 
     }
 }

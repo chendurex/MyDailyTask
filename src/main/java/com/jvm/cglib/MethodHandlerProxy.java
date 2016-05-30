@@ -22,15 +22,15 @@ public class MethodHandlerProxy {
     @Test
     public void testFixedValue() {
         Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(SampleClass.class);
+        enhancer.setSuperclass(SampleBean.class);
         enhancer.setCallback(new FixedValue() {
             @Override
             public Object loadObject() throws Exception {
                 return "hello enhancer test!";
             }
         });
-        SampleClass sampleClass = (SampleClass) enhancer.create();
-        Assert.assertEquals("Hello cglib!", sampleClass.test("hello cglib!"));
+        SampleBean sampleBean = (SampleBean) enhancer.create();
+        Assert.assertEquals("Hello cglib!", sampleBean.test("hello cglib!"));
     }
 
     /**
@@ -42,7 +42,7 @@ public class MethodHandlerProxy {
     @Test
     public void testInvocationHandler() {
         Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(SampleClass.class);
+        enhancer.setSuperclass(SampleBean.class);
         enhancer.setCallback(new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -54,9 +54,9 @@ public class MethodHandlerProxy {
 
             }
         });
-        SampleClass sampleClass = (SampleClass) enhancer.create();
-        Assert.assertEquals("invocation method handle",sampleClass.test(null));
-        Assert.assertEquals("test",sampleClass.hashCode());
+        SampleBean sampleBean = (SampleBean) enhancer.create();
+        Assert.assertEquals("invocation method handle", sampleBean.test(null));
+        Assert.assertEquals("test", sampleBean.hashCode());
     }
 
     /**
@@ -70,7 +70,7 @@ public class MethodHandlerProxy {
     @Test
     public void MethodInterceptor() {
         Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(SampleClass.class);
+        enhancer.setSuperclass(SampleBean.class);
         enhancer.setCallback(new MethodInterceptor() {
             @Override
             public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
@@ -82,9 +82,9 @@ public class MethodHandlerProxy {
                 }
             }
         });
-        SampleClass sampleClass = (SampleClass)enhancer.create();
-        Assert.assertEquals(sampleClass.test("method interceptor test"),"method interceptor test");
-        System.out.println(sampleClass.hashCode());
+        SampleBean sampleBean = (SampleBean)enhancer.create();
+        Assert.assertEquals(sampleBean.test("method interceptor test"),"method interceptor test");
+        System.out.println(sampleBean.hashCode());
     }
 
     /**
@@ -101,16 +101,16 @@ public class MethodHandlerProxy {
     @Test
     public void testLazyLoader() {
         Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(SampleClass.class);
+        enhancer.setSuperclass(SampleBean.class);
         enhancer.setCallback(new LazyLoader() {
             @Override
             public Object loadObject() throws Exception {
-                return new SampleClass();
+                return new SampleBean();
             }
         });
-        SampleClass sampleClass = (SampleClass)enhancer.create();
-        sampleClass.setName("chen");
-        System.out.println(sampleClass.test("test"));
+        SampleBean sampleBean = (SampleBean)enhancer.create();
+        sampleBean.setName("chen");
+        System.out.println(sampleBean.test("test"));
 
 
     }
@@ -123,16 +123,16 @@ public class MethodHandlerProxy {
     @Test
     public void testDispatcher() {
         Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(SampleClass.class);
+        enhancer.setSuperclass(SampleBean.class);
         enhancer.setCallback(new Dispatcher() {
             @Override
             public Object loadObject() throws Exception {
-                return new SampleClass();
+                return new SampleBean();
             }
         });
-        SampleClass sampleClass = (SampleClass)enhancer.create();
-        sampleClass.setName("chen");
-        System.out.println(sampleClass.test("test"));
+        SampleBean sampleBean = (SampleBean)enhancer.create();
+        sampleBean.setName("chen");
+        System.out.println(sampleBean.test("test"));
 
     }
 
@@ -145,16 +145,16 @@ public class MethodHandlerProxy {
     @Test
     public void testProxyRefDispatcher() {
         Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(SampleClass.class);
+        enhancer.setSuperclass(SampleBean.class);
         enhancer.setCallback(new ProxyRefDispatcher() {
             @Override
             public Object loadObject(Object proxy) throws Exception {
                 return null;
             }
         });
-        SampleClass sampleClass = (SampleClass)enhancer.create();
-        sampleClass.setName("chen");
-        System.out.println(sampleClass.test("test"));
+        SampleBean sampleBean = (SampleBean)enhancer.create();
+        sampleBean.setName("chen");
+        System.out.println(sampleBean.test("test"));
 
     }
 
@@ -164,11 +164,11 @@ public class MethodHandlerProxy {
     @Test
     public void testNoOp() {
         Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(SampleClass.class);
+        enhancer.setSuperclass(SampleBean.class);
         enhancer.setCallback(new NoOp() {});
-        SampleClass sampleClass = (SampleClass)enhancer.create();
-        System.out.println(sampleClass);
-        sampleClass.setName("chen");
-        System.out.println(sampleClass.test("test"));
+        SampleBean sampleBean = (SampleBean)enhancer.create();
+        System.out.println(sampleBean);
+        sampleBean.setName("chen");
+        System.out.println(sampleBean.test("test"));
     }
 }
