@@ -11,7 +11,7 @@ import com.sun.org.apache.bcel.internal.generic.RETURN;
 public class SampleBean {
     private String name;
     private Integer age;
-
+    private String value;
 
     public String test(String input) {
         return "hi:" + name + " ,Hello world!" + input;
@@ -31,5 +31,13 @@ public class SampleBean {
 
     public String getName() {
         return name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }
