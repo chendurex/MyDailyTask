@@ -27,6 +27,7 @@ public class InterfaceMakerProxy {
     @Test
     public void typeCreate() {
         Type [] t = new Type[]{Type.getType(String.class),Type.INT_TYPE};
+
         System.out.println(t[1]);
     }
 }
