@@ -12,6 +12,9 @@ public class CtClassObject {
     public void show() {
         System.out.println("hi:"+name);
     }
+    public String show(String name) {
+        return "hi!"+name;
+    }
     public String getName() {
         return name;
     }
