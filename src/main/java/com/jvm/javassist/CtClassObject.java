@@ -15,7 +15,10 @@ public class CtClassObject {
         System.out.println("hi:"+name);
     }
     private void say(String name) {
-        System.out.println("say hello"+name);
+        System.out.println("say hello" + name);
+    }
+    public String show(String name) {
+        return "hi!"+name;
     }
     public String getName() {
         return name;
