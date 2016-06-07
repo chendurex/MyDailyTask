@@ -1,9 +1,16 @@
 package com.jvm.javassist;
 
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.Modifier;
 import javassist.bytecode.*;
+import org.junit.Test;
 
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 
 /**
  * @author chen
@@ -24,5 +31,21 @@ public class CreateClass {
         cf.addField(f);
 
         cf.write(new DataOutputStream(new FileOutputStream("Foo.class")));
+    }
+
+    @Test
+    public void addVarargs() throws Exception{
+        ClassPool classPool = ClassPool.getDefault();
+        CtClass cf = classPool.get("com.jvm.javassist.CtClassObject");
+        CtMethod m = CtMethod.make("public int length(int [] args) { return args.length; }",cf);
+        // 貌似没生效，不能使用可变数组
+        m.setModifiers(m.getModifiers() | Modifier.VARARGS);
+        cf.addMethod(m);
+        CtClassObject ctClassObject = (CtClassObject) cf.toClass().newInstance();
+        // 怎样使用javassist执行方法？
+        CtMethod ctMethod = cf.getDeclaredMethod("length");
+        Method method = ctClassObject.getClass().getDeclaredMethod("length",new Class[]{int[].class});
+        System.out.println(method.invoke(ctClassObject,new int[]{123,123,1234}));
+
     }
 }
