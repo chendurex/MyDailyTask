@@ -11,7 +11,7 @@ public class InsertionSort {
     int[] array = {29, 10, 4, 5, 3};
 
     @Test
-    public void sort() {
+    public void insertionSort() {
         for (int i = 1; i < array.length; i++) {
             int key = array[i];
             int j = i - 1;
@@ -25,7 +25,7 @@ public class InsertionSort {
     }
 
     @Test
-    public void sort2() {
+    public void compareSort() {
         for (int i = 0; i < array.length; i++) {
             for (int j = i + 1; j < array.length; j++) {
                 if (array[i] < array[j]) {
@@ -34,6 +34,23 @@ public class InsertionSort {
                     array[j] = temp;
                 }
             }
+        }
+        System.out.println(Arrays.toString(array));
+    }
+
+    @Test
+    public void selectionSort() {
+        for (int i = 0; i < array.length - 1; i++) {
+            int k = array[i];
+            int min = i;
+            for (int j = i + 1;j < array.length; j++) {
+                if (k < array[j]) {
+                    k = array[j];
+                    min = j;
+                }
+            }
+            array[min] = array[i];
+            array[i] = k;
         }
         System.out.println(Arrays.toString(array));
     }
