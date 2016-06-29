@@ -1,6 +1,5 @@
 package com.algorithms;
 
-import com.sun.xml.internal.messaging.saaj.soap.ver1_2.DetailEntry1_2Impl;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -9,7 +8,7 @@ import java.util.Arrays;
  * Created by Administrator on 2016/6/28.
  */
 public class ForkJoinSort {
-    private int[] array = {1, 9, 18, 25, 4, 6, 2, 99,50};
+    private int[] array = {1, 9, 18, 25, 4, 6, 2, 99, 50};
 
     @Test
     public void forkJoinSort() {
@@ -21,57 +20,95 @@ public class ForkJoinSort {
         if (array.length == 1) {
             return array;
         } else if (array.length == 2) {
-            return baseSort(array[0],array[1]);
+            return baseSort(array[0], array[1]);
         } else {
             int middleLen = array.length >> 1;
             int array1Len = middleLen;
             int array2Len = array.length - middleLen;
-            int []array1 = new int[array1Len];
-            int []array2 = new int[array2Len];
-            for (int i = 0;i < array1Len;i++) {
+            int[] array1 = new int[array1Len];
+            int[] array2 = new int[array2Len];
+            for (int i = 0; i < array1Len; i++) {
                 array1[i] = array[i];
             }
-            for (int k = 0;k < array2Len; k++) {
+            for (int k = 0; k < array2Len; k++) {
                 array2[k] = array[k + middleLen];
             }
-            return mergeArray(newArray(array1),newArray(array2));
+            return mergeArray(newArray(array1), newArray(array2));
         }
     }
 
     private int[] baseSort(int i, int k) {
         if (i < k) {
-            return new int[] {i,k};
+            return new int[]{i, k};
         } else {
-            return new int[] {k,i};
+            return new int[]{k, i};
         }
     }
+
 
     private int[] mergeArray(int[] array1, int[] array2) {
         int array1Len = array1.length;
         int array2Len = array2.length;
         int mergeArrayLen = array1Len + array2Len;
         int[] mergeArray = new int[mergeArrayLen];
-        for (int mergeIndex = 0,array1Index = 0,array2Index = 0; mergeIndex < mergeArrayLen; mergeIndex++) {
+        for (int mergeIndex = 0, array1Index = 0, array2Index = 0; mergeIndex < mergeArrayLen; mergeIndex++) {
             if (array1Index == array1Len) {
                 while (array2Index < array2Len) {
                     mergeArray[mergeIndex] = array2[array2Index];
-                    array2Index ++;
-                    mergeIndex ++;
+                    array2Index++;
+                    mergeIndex++;
                 }
-            } else if (array2Index == array2Len){
+            } else if (array2Index == array2Len) {
                 while (array1Index < array1Len) {
                     mergeArray[mergeIndex] = array1[array1Index];
-                    array1Index ++;
-                    mergeIndex ++;
+                    array1Index++;
+                    mergeIndex++;
                 }
             } else if (array1[array1Index] > array2[array2Index]) {
                 mergeArray[mergeIndex] = array2[array2Index];
-                array2Index ++;
+                array2Index++;
             } else {
                 mergeArray[mergeIndex] = array1[array1Index];
-                array1Index ++;
+                array1Index++;
             }
         }
         return mergeArray;
     }
+
+
+
+    public void sortArray(int array[], int offset, int position, int finish) {
+        int leftLen = position - offset;
+        int rightLen = finish - position;
+        int[] leftArray = new int[leftLen];
+        int[] rightArray = new int[rightLen];
+        for (int i = 0; i < leftLen; i++) {
+            leftArray[i] = array[offset + i];
+        }
+        for (int j = 0; j < rightLen; j++) {
+            rightArray[j] = array[position + j];
+        }
+        for (int k = offset,l = 0, r = 0; k < finish ;k ++) {
+            if (r == rightLen) {
+                while (l < leftLen) {
+                    array[k] = leftArray[l];
+                    l ++;
+                    k ++;
+                }
+            } else if (l == leftLen) {
+                while (r < rightLen) {
+                    array[k] = rightArray[r];
+                    r ++;
+                    k ++;
+                }
+            }else if (leftArray[l] > rightArray[r]) {
+                array[k] = rightArray[r];
+                r ++;
+            } else {
+                array[k] = leftArray[l];
+                l ++;
+            }
+        }
+    }
+
 }
