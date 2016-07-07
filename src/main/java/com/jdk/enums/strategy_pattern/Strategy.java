@@ -14,7 +14,7 @@ public enum Strategy {
         @Override public void play() {
             System.out.printf("In %s, Push it for Single %n", name());
         }
-    }, /* Test match is all about occupying the crease and grinding opposition */
+    }, /* MonitorAssign match is all about occupying the crease and grinding opposition */
     TEST {
         @Override public void play() {
             System.out.printf("In %s, Grind them hard %n", name());
