@@ -15,9 +15,6 @@ public class MyQueue<T> {
             queue.enqueue(i);
             System.out.println(queue.dequeue());
         }
-        /*for (int i = 0; i < 20; i++) {
-            System.out.println(queue.dequeue());
-        }*/
     }
 
     private Object [] table = new Object[20];
@@ -26,12 +23,7 @@ public class MyQueue<T> {
 
     public void enqueue(T t) {
         if (isFull()) {
-             throw new IllegalStateException("MyQueue full");
-        }
-        final int curTail = tail;
-        final int len = table.length;
-        if (curTail == len) {
-            tail = 0;
+            throw new IllegalStateException("MyQueue full");
         }
         table[tail ++] = t;
     }
@@ -40,17 +32,27 @@ public class MyQueue<T> {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
-        Object obj = table[head ++];
         final int curHead = head;
         final int len = table.length;
         if (curHead == len) {
             head = 0;
         }
+        Object obj = table[head ++];
         return (T)obj;
     }
 
     public boolean isFull() {
-         if (tail + 1 == head) {
+        final int curTail = tail;
+        final int len = table.length;
+        final boolean tailIsEnd = curTail == len;
+        if (tailIsEnd) {
+            if (head == 0) {
+                return true;
+            } else {
+                tail = 0;
+                return false;
+            }
+        }else if (tail + 1 == head) {
             return true;
         } else {
             return false;
