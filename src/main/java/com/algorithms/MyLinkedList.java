@@ -11,7 +11,6 @@ public class MyLinkedList<E> implements List<E>, Deque<E> {
         mll.add(1);
         mll.add(2);
         mll.add(3);
-        System.out.println();
         mll.add(4);
         for (int i = 0, len = mll.size(); i < len; i++) {
             System.out.println(mll.poll());
