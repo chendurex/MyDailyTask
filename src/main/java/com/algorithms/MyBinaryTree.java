@@ -10,8 +10,8 @@ public class MyBinaryTree<E extends Comparable> {
         tree.insert(1);tree.insert(10);tree.insert(15);tree.insert(20);
         tree.insert(25);tree.insert(18);tree.insert(8);tree.insert(21);
         tree.insert(29);tree.insert(31);tree.insert(11);tree.insert(17);
-        System.out.println(tree.preNode(tree.get(21)).ele);
-        System.out.println(tree.nextNode(tree.get(20)).ele);
+        System.out.println(tree.preNode(tree.get(5)).ele);
+        System.out.println(tree.nextNode(tree.get(29)).ele);
     }
 
     private Node root;
@@ -20,27 +20,39 @@ public class MyBinaryTree<E extends Comparable> {
         root = new Node(null, null, ele, null);
     }
 
+    /**
+     * 查找前驱节点
+     * 1，如果存在左节点，则前驱节点是左节点的最右子节点
+     * 2，否则前驱节点是祖先节点延伸出来的右节点
+     * 3，否则不存在前驱节点返回空节点
+     * @param node
+     * @return
+     */
     public Node preNode(Node node) {
         if (node.left != null) {
-            if (node.left.right != null) {
-                Node preNode = node.left.right;
-                while (preNode.right != null) {
-                    preNode = preNode.right;
-                }
-                return preNode;
+            Node preNode = node.left;
+            while (preNode.right != null) {
+                preNode = preNode.right;
             }
-            return node.left;
+            return preNode;
         } else {
-            while (node.parent != null) {
-                if (node.parent.right == node) {
-                    return node.parent;
+            Node preNode = node;
+            while (preNode.parent != null) {
+                if (preNode.parent.right == preNode) {
+                    return preNode.parent;
                 }
-                node = node.parent;
+                preNode = preNode.parent;
             }
         }
-        return new Node(null,null,null,null);
+        return emptyNode();
     }
 
+    /**
+     * 1，如果存在右节点，则后继节点是右节点的左子节点
+     * 2，否则后继节点是祖先父节点延伸出来的左节点
+     * @param node
+     * @return
+     */
     public Node nextNode(Node node) {
         if (node.right != null) {
             Node nextNode = node.right;
@@ -50,10 +62,13 @@ public class MyBinaryTree<E extends Comparable> {
             return nextNode;
         } else {
             Node nextNode = node;
-            while (nextNode.parent.left != nextNode) {
+            while (nextNode.parent != null) {
+                if (nextNode.parent.left == nextNode) {
+                    return nextNode.parent;
+                }
                 nextNode = nextNode.parent;
             }
-            return nextNode.parent;
+            return emptyNode();
         }
     }
 
@@ -75,7 +90,7 @@ public class MyBinaryTree<E extends Comparable> {
                 node = node.right;
             }
         }
-        return new Node(null, null, null, null);
+        return emptyNode();
     }
 
 
@@ -105,6 +120,10 @@ public class MyBinaryTree<E extends Comparable> {
             parent.right = node;
         }
         node.parent = parent;
+    }
+
+    private Node emptyNode() {
+        return new Node(null, null, null, null);
     }
 
     private static class Node<E extends Comparable> {
