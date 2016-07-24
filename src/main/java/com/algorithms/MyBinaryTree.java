@@ -10,8 +10,10 @@ public class MyBinaryTree<E extends Comparable> {
         tree.insert(1);tree.insert(10);tree.insert(15);tree.insert(20);
         tree.insert(25);tree.insert(18);tree.insert(8);tree.insert(21);
         tree.insert(29);tree.insert(31);tree.insert(11);tree.insert(17);
-        System.out.println(tree.preNode(tree.get(5)).ele);
-        System.out.println(tree.nextNode(tree.get(29)).ele);
+
+        tree.delete(20);
+        System.out.println(tree.preNode(tree.get(21)).ele);
+        System.out.println(tree.nextNode(tree.get(18)).ele);
     }
 
     private Node root;
@@ -93,6 +95,65 @@ public class MyBinaryTree<E extends Comparable> {
         return emptyNode();
     }
 
+    public void delete(E ele) {
+        Node node = get(ele);
+        if (isNull(node)) {
+            throw new IllegalArgumentException("can not find node");
+        }
+        // 无子节点则直接删除
+        if (node.left == null && node.right == null) {
+            final Node parent = node.parent;
+            if (parent != null) {
+                if (parent.left == node) {
+                    parent.left = null;
+                } else {
+                    parent.right = null;
+                }
+            }
+        }// 无右节点则直接把左节点替换
+        else if (node.right == null) {
+            final Node parent = node.parent;
+            if (parent != null) {
+                parent.left = node.left;
+                node.left.parent = parent;
+            }
+        }// 右节点无子左节点则直接把右节点替换
+        else if (node.right.left == null) {
+            final Node parent = node.parent;
+            if (parent != null) {
+                parent.right = node.right;
+                node.right.parent = parent;
+
+                node.left.parent = node.right;
+                node.right.left = node.left;
+            }
+        }// 查找右节点的前驱节点替换删除的节点
+        else {
+            final Node parent = node.parent;
+            Node left = node.right.left;
+            while (left.left != null) {
+                left = left.left;
+            }
+            // 整理left节点的右节点
+            if (left.right != null) {
+                left.parent = left.right;
+                left.parent.left = left.right;
+            }
+            // 整理被删除的节点的右节点
+            if (node.right != null) {
+                node.right.parent = left;
+                left.right = node.right;
+            }
+            // 整理被删除的左节点
+            if (node.left != null) {
+                node.left.parent = left;
+                left.left = node.left;
+            }
+            parent.right = left;
+            left.parent = parent;
+        }
+        cleanNode(node);
+    }
 
     public void insert(E ele) {
         if (ele == null) {
@@ -124,6 +185,17 @@ public class MyBinaryTree<E extends Comparable> {
 
     private Node emptyNode() {
         return new Node(null, null, null, null);
+    }
+
+    private void cleanNode(Node node) {
+        node.parent = null;
+        node.right = null;
+        node.left = null;
+        node.ele = null;
+    }
+
+    public boolean isNull(Node node) {
+        return node.ele == null;
     }
 
     private static class Node<E extends Comparable> {
