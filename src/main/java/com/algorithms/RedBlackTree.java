@@ -6,13 +6,11 @@ package com.algorithms;
 public class RedBlackTree<E extends Comparable> {
 
     public static void main(String[] args) {
-        RedBlackTree tree = new RedBlackTree(5);
-        int [] array = {1,10,15,20};
+        RedBlackTree tree = new RedBlackTree();
+        int [] array = {5,1,10,15,20,25,18,8,21,29,31,11,17};
         for (int i : array) {
             tree.insert(i);
         }
-        //tree.insert(25);tree.insert(18);tree.insert(8);tree.insert(21);
-        //tree.insert(29);tree.insert(31);tree.insert(11);tree.insert(17);
 
         for (int i : array) {
             Node node = tree.get(i);
@@ -21,15 +19,10 @@ public class RedBlackTree<E extends Comparable> {
     }
 
 
-    private final int RED = 0;
-    private final int BLACK = 1;
-    private final Node empty = new Node(null, null, null, null, BLACK);
-    private final Node SENTINEL = new Node(empty, empty, null, empty, BLACK);
+    private final String RED = "红";
+    private final String BLACK = "黑";
     private Node ROOT;
 
-    public RedBlackTree(E ele) {
-        ROOT = new Node(SENTINEL, SENTINEL, ele, SENTINEL, BLACK);
-    }
     /**
      * 左旋是将当前节点与右节点进行逆时针旋转，那么我们规定传入的节点为node，右节点为rNode，父节点为pNode
      * 1，判断rNode的左子节点是否为哨兵，如果不是则修改父节点指针
@@ -39,21 +32,18 @@ public class RedBlackTree<E extends Comparable> {
      * @param node
      */
     public void leftRatation(Node node) {
-        if (node == SENTINEL) {
-            return ;
-        }
         Node rNode = node.right;
         final Node pNode = node.parent;
         final Node rNodeLeft = rNode.left;
-        if (rNodeLeft != SENTINEL) {
+        if (rNodeLeft != null) {
             rNodeLeft.parent = node;
         }
-        if (pNode == SENTINEL) {
-            rNode = ROOT;
-        } else if (pNode.right == node) {
-            pNode.right = rNode;
-        } else {
+        if (pNode == null) {
+            reCreateRoot(rNode);
+        } else if (pNode.left == node) {
             pNode.left = rNode;
+        } else {
+            pNode.right = rNode;
         }
         node.right = rNodeLeft;
         node.parent = rNode;
@@ -71,79 +61,80 @@ public class RedBlackTree<E extends Comparable> {
      * @param node
      */
     public void rightRatation(Node node) {
-        if (node == SENTINEL) {
-            return ;
-        }
         final Node lNode = node.left;
         final Node pNode = node.parent;
-        if (lNode.right != SENTINEL) {
-            lNode.right.parent = node.left;
+        final Node lrNode = lNode.right;
+        if (lrNode != null) {
+            lrNode.parent = node;
         }
-        if (pNode == SENTINEL) {
-            node = ROOT;
+        if (pNode == null) {
+            reCreateRoot(lNode);
         } else if (pNode.left == node) {
             pNode.left = lNode;
         } else {
             pNode.right = lNode;
         }
+
         lNode.right = node;
         lNode.parent = pNode;
 
+        node.left = lrNode;
         node.parent = lNode;
-        node.left = lNode.right;
     }
 
     /**
-     * 1，如果节点的父节点为黑色，是不是违反任何条件的，所以无需操作
-     * 2，如果节点的父节点是ROOT节点，则直接修改颜色为黑色即可
-     * 3，如果当前节点的父节点是红色，且祖父节点的另一个子节点(叔叔节点)是红色。此时父节点的父节点一定存在，否则插入前
-     * 就已经不是红黑树。于此同时，又分为父节点是祖父节点的左孩子还是右孩子，根据对称性，我们只要解开一个方向就可以了。
+     * 修复红黑树
+     * 1，如果树为ROOT则直接把ROOT.color = BLACK
+     * 2，如果是的父节点是黑色，则不用修改
+     * 3，如果树的父节点是红色则根据祖父节点(叔叔节点)有两种情况：
+     * 3.1，叔叔节点在父节点左边
+     * 3.2，叔叔节点在父节点右边
+     * 4，因为修复3情况是对称性，所以我们只考虑3.1情况修复，此时有三种情况：
+     * 4.1，获取叔叔节点(ppNode.right因为父节点在祖父节点的左边)
+     * 4.2，如果叔叔节点存在，并且颜色是红色，则直接修改颜色即可，并且把祖父节点变为当前节点，变成另外两种情况
+     * (如果叔叔节点不存在直接右旋转即可变成红黑树)
+     * 4.3，如果当前节点是父节点的右边，则进行左旋(左旋是以父节点为节点，与右子节点旋转)
+     * 4.4，否则最后一种情况，即，当前节点是父节点的左节点，则进行右旋(右旋是以父节点为节点，与左子节点旋转)
      * @param node
      */
     public void fixUp(Node node) {
-        if (node.parent.color != BLACK) {
-            if (node == ROOT) {
-                node.color = BLACK;
+        while (node.parent != null && node.parent.color == RED) {
+            final Node pNode = node.parent;
+            final Node ppNode = pNode.parent;
+            if (pNode == ppNode.left) {
+                Node prNode = ppNode.right;
+                if (prNode != null && prNode.color == RED) {
+                    pNode.color = BLACK;
+                    prNode.color = BLACK;
+                    ppNode.color = RED;
+                    node = ppNode;
+                } else if (node == pNode.right) {
+                    node = pNode;
+                    leftRatation(node);
+                } else {
+                    pNode.color = BLACK;
+                    ppNode.color = RED;
+                    rightRatation(ppNode);
+                }
+
             } else {
-                while (node.parent != null && node.parent.color == RED) {
-                    final Node pNode = node.parent;
-                    final Node ppNode = pNode.parent;
-                    if (pNode == ppNode.left) {
-                        Node prNode = ppNode.right;
-                        if (prNode != null && prNode.color == RED) {
-                            pNode.color = BLACK;
-                            prNode.color = BLACK;
-                            ppNode.color = RED;
-                            node = ppNode;
-                        } else if (node == pNode.right) {
-                            node = pNode;
-                            leftRatation(node);
-                        } else {
-                            pNode.color = BLACK;
-                            ppNode.color = RED;
-                            rightRatation(ppNode);
-                        }
-                    } else {
-                        Node plNode = ppNode.left;
-                        if (plNode != null && plNode.color == RED) {
-                            pNode.color = BLACK;
-                            plNode.color = BLACK;
-                            ppNode.color = RED;
-                            node = ppNode;
-                        } else if (node == pNode.right) {
-                            node = pNode;
-                            leftRatation(node);
-                        } else {
-                            pNode.color = BLACK;
-                            ppNode.color = RED;
-                            rightRatation(ppNode);
-                        }
-                    }
+                Node plNode = ppNode.left;
+                if (plNode != null && plNode.color == RED) {
+                    pNode.color = BLACK;
+                    plNode.color = BLACK;
+                    ppNode.color = RED;
+                    node = ppNode;
+                } else if (node == pNode.left) {
+                    node = pNode;
+                    rightRatation(node);
+                } else {
+                    pNode.color = BLACK;
+                    ppNode.color = RED;
+                    leftRatation(ppNode);
                 }
             }
-            ROOT.color = BLACK;
         }
-
+        ROOT.color = BLACK;
     }
 
     public Node get(E ele) {
@@ -154,7 +145,7 @@ public class RedBlackTree<E extends Comparable> {
     }
 
     private Node get(E ele, Node node) {
-        while (node != SENTINEL) {
+        while (node != null) {
             final int compare = ele.compareTo(node.ele);
             if (compare == 0) {
                 return node;
@@ -164,19 +155,24 @@ public class RedBlackTree<E extends Comparable> {
                 node = node.right;
             }
         }
-        return SENTINEL;
+        return emptyNode();
     }
 
     public void insert(E ele) {
         if (ele == null) {
             throw new IllegalArgumentException("value can not be null");
         }
+        if (ROOT == null) {
+            ROOT = initNode(ele);
+            ROOT.color = BLACK;
+            return ;
+        }
         insert(initNode(ele), ROOT);
     }
 
     private void insert(Node node, Node pNode) {
         Node<E> parent = pNode;
-        while (pNode != SENTINEL) {
+        while (pNode != null) {
             parent = pNode;
             final int compare = node.ele.compareTo(pNode.ele);
             if (compare == 0) {
@@ -196,19 +192,26 @@ public class RedBlackTree<E extends Comparable> {
         fixUp(node);
     }
 
-
+    private void reCreateRoot(Node node) {
+        ROOT = node;
+        ROOT.color = BLACK;
+    }
 
     private Node initNode(E ele) {
-        return new Node(SENTINEL, SENTINEL, ele, SENTINEL, RED);
+        return new Node(null, null, ele, null, RED);
+    }
+
+    private Node emptyNode() {
+        return new Node(null, null, null, null, RED);
     }
 
     private static class Node<E extends Comparable> {
         Node left;
         Node right;
         Node parent;
-        int color;
+        String color;
         E ele;
-        public Node(Node parent,Node left, E ele, Node right,int color) {
+        public Node(Node parent,Node left, E ele, Node right,String color) {
             this.parent = parent;
             this.left = left;
             this.right = right;

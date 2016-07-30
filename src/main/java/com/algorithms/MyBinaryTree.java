@@ -159,7 +159,7 @@ public class MyBinaryTree<E extends Comparable> {
         if (ele == null) {
             throw new IllegalArgumentException("value can not be null");
         }
-        insert(new Node(null, null,ele,null), root);
+        insert(initNode(ele), root);
     }
 
     private void insert(Node node, Node pNode) {
@@ -181,6 +181,10 @@ public class MyBinaryTree<E extends Comparable> {
             parent.right = node;
         }
         node.parent = parent;
+    }
+
+    protected Node initNode(E ele) {
+        return new Node(null, null, ele, null);
     }
 
     private Node emptyNode() {
