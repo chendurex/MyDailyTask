@@ -1,7 +1,12 @@
 package com.algorithms;
 
 /**
- * Created by Administrator on 2016/7/27.
+ * 红黑树的五个性质：、
+ * 1，所有的节点是红色或者黑色
+ * 2，根节点是黑色
+ * 3，所有叶节点(没有子节点的节点，即为null的节点)是黑色
+ * 4，所有红色节点的左右子节点是黑色
+ * 5，对于每一个节点，都有从该节点到叶节点的路径上，有相同数目的黑节点
  */
 public class RedBlackTree<E extends Comparable> {
 
