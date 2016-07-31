@@ -127,7 +127,7 @@ public class MyBinaryTree<E extends Comparable> {
                 node.left.parent = node.right;
                 node.right.left = node.left;
             }
-        }// 查找右节点的前驱节点替换删除的节点
+        }// 查找右节点的后继节点替换删除的节点
         else {
             final Node parent = node.parent;
             Node left = node.right.left;
@@ -136,7 +136,7 @@ public class MyBinaryTree<E extends Comparable> {
             }
             // 整理left节点的右节点
             if (left.right != null) {
-                left.parent = left.right;
+                left.right.parent = left.parent;
                 left.parent.left = left.right;
             }
             // 整理被删除的节点的右节点
