@@ -12,7 +12,7 @@ public class InsertionSort {
 
     @Test
     public void insertionSort() {
-        for (int i = 1; i < array.length; i++) {
+        for (int i = 1, len = array.length; i < len; i++) {
             int key = array[i];
             int j = i - 1;
             while (j > -1 && array[j] < key) {
@@ -26,8 +26,8 @@ public class InsertionSort {
 
     @Test
     public void compareSort() {
-        for (int i = 0; i < array.length; i++) {
-            for (int j = i + 1; j < array.length; j++) {
+        for (int i = 0, len = array.length; i < len; i++) {
+            for (int j = i + 1; j < len; j++) {
                 if (array[i] < array[j]) {
                     int temp = array[i];
                     array[i] = array[j];
