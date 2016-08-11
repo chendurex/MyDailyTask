@@ -19,3 +19,4 @@ target/
 out/
 /src/main/java/META-INF/
 activemq-data/
+*.log
