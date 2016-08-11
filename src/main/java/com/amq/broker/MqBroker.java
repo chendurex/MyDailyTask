@@ -1,6 +1,9 @@
 package com.amq.broker;
 
+import org.apache.activemq.broker.BrokerFactory;
 import org.apache.activemq.broker.BrokerService;
+
+import java.net.URI;
 
 /**
  * @author chen
@@ -11,8 +14,8 @@ import org.apache.activemq.broker.BrokerService;
 public class MqBroker {
 
     public static void main(String[] args) throws Exception {
-        BrokerService brokerService = new BrokerService();
-        // BrokerService brokerService = BrokerFactory.createBroker(new URI("broker:tcp://localhost:61616"));
+       // BrokerService brokerService = new BrokerService();
+         BrokerService brokerService = BrokerFactory.createBroker(new URI("broker:tcp://localhost:61616"));
         // BrokerService broker = BrokerFactory.createBroker(new URI("xbean:com/test/activemq.xml"));
        /* in spring
        <bean id="broker" class="org.apache.activemq.xbean.BrokerFactor
@@ -22,7 +25,8 @@ public class MqBroker {
          <property name="start" value="true" />
           </bean>*/
         brokerService.setBrokerName("myBroker");
-        brokerService.addConnector("tcp://localhost:61616");
+       // brokerService.addConnector("tcp://localhost:61616");
+        System.out.println("==================broker start==================");
         brokerService.start();
     }
 }
