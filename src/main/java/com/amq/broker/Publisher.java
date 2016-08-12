@@ -16,6 +16,7 @@
  */
 package com.amq.broker;
 
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.qpid.jms.*;
 import javax.jms.*;
 
@@ -28,9 +29,9 @@ class Publisher {
         String user = env("ACTIVEMQ_USER", "admin");
         String password = env("ACTIVEMQ_PASSWORD", "password");
         String host = env("ACTIVEMQ_HOST", "localhost");
-        int port = Integer.parseInt(env("ACTIVEMQ_PORT", "5672"));
+        int port = Integer.parseInt(env("ACTIVEMQ_PORT", "61616"));
 
-        String connectionURI = "amqp://" + host + ":" + port;
+        String connectionURI = "tcp://" + host + ":" + port;
         String destinationName = arg(args, 0, "topic://event");
 
         int messages = 10000;
@@ -42,7 +43,8 @@ class Publisher {
             body += DATA.charAt(i % DATA.length());
         }
 
-        JmsConnectionFactory factory = new JmsConnectionFactory(connectionURI);
+        ConnectionFactory factory = new ActiveMQConnectionFactory(connectionURI);
+
 
         Connection connection = factory.createConnection(user, password);
         connection.start();
