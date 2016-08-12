@@ -20,7 +20,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.qpid.jms.*;
 import javax.jms.*;
 
-class Listener extends Thread implements MessageListener {
+class Listener extends Thread implements MessageListener,ExceptionListener {
 
     public static void main(String[] args) {
         new Listener().start();
@@ -39,11 +39,12 @@ class Listener extends Thread implements MessageListener {
             String connectionURI = "tcp://" + host + ":" + port;
             String destinationName = "topic://event";
 
-            ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(connectionURI);
+            /*ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(connectionURI);
             Connection connection = factory.createConnection(user, password);
             connection.start();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            //session.setMessageListener(this);
+*/
+            Session session = MQProductHelper.createSession(user, password, connectionURI, false);
             Destination destination ;
             if (destinationName.startsWith(TOPIC_PREFIX)) {
                 destination = session.createTopic(destinationName.substring(TOPIC_PREFIX.length()));
@@ -51,8 +52,9 @@ class Listener extends Thread implements MessageListener {
                 destination = session.createQueue(destinationName);
             }
 
-            MessageConsumer consumer = session.createConsumer(destination);
+            MessageConsumer consumer = session.createDurableSubscriber((Topic) destination, "test");
 
+            session.setMessageListener(this);
             long start = System.currentTimeMillis();
             long count = 1;
             System.out.println("Waiting for messages...");
@@ -63,7 +65,7 @@ class Listener extends Thread implements MessageListener {
                     if ("SHUTDOWN".equals(body)) {
                         long diff = System.currentTimeMillis() - start;
                         System.out.println(String.format("Received %d in %.2f seconds", count, (1.0 * diff / 1000.0)));
-                        connection.close();
+                        //connection.close();
                         try {
                             Thread.sleep(10);
                         } catch (Exception e) {}
@@ -110,5 +112,10 @@ class Listener extends Thread implements MessageListener {
     @Override
     public void onMessage(Message message) {
         System.out.println("enter message ====" + message);
+    }
+
+    @Override
+    public void onException(JMSException e) {
+        System.out.println(e);
     }
 }
