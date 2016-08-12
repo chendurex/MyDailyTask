@@ -25,11 +25,11 @@ public class Main {
                 @Override
                 public void run() {
                     System.out.println("current task = " + atomicInteger.incrementAndGet() + "==================");
-                    /*try {
-                        TimeUnit.SECONDS.sleep(1);
+                    try {
+                        TimeUnit.SECONDS.sleep(30);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-                    }*/
+                    }
                 }
             });
             System.out.println("core pool size = " + threadPoolExecutor.getCorePoolSize());
@@ -38,7 +38,7 @@ public class Main {
             System.out.println("core task size = " + threadPoolExecutor.getTaskCount());
         }
         try {
-            TimeUnit.SECONDS.sleep(10);
+            TimeUnit.SECONDS.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
