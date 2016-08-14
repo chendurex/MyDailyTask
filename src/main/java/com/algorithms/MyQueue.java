@@ -20,46 +20,37 @@ public class MyQueue<T> {
     private Object [] table = new Object[20];
     private int head = 0;
     private int tail = 0;
+    private int size = 0;
 
-    public void enqueue(T t) {
+    public boolean enqueue(T t) {
         if (isFull()) {
-            throw new IllegalStateException("MyQueue full");
+            throw new IllegalStateException("MyCallable full");
         }
-        table[tail ++] = t;
+        table[tail++] = t;
+        if (tail == table.length) {
+            tail = 0;
+        }
+        size++;
+        return true;
     }
 
     public T dequeue() {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
-        final int curHead = head;
-        final int len = table.length;
-        if (curHead == len) {
+        Object obj = table[head++];
+        if (head == table.length) {
             head = 0;
         }
-        Object obj = table[head ++];
+        size--;
         return (T)obj;
     }
 
-    public boolean isFull() {
-        final int curTail = tail;
-        final int len = table.length;
-        final boolean tailIsEnd = curTail == len;
-        if (tailIsEnd) {
-            if (head == 0) {
-                return true;
-            } else {
-                tail = 0;
-                return false;
-            }
-        }else if (tail + 1 == head) {
-            return true;
-        } else {
-            return false;
-        }
+    public boolean isEmpty() {
+        return size == 0;
     }
 
-    public boolean isEmpty() {
-        return tail == head;
+    public boolean isFull() {
+        return size == table.length;
     }
 }
