@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Main {
     public static void main(String[] args) {
-        int coreThread = 1;
+        int coreThread = 100;
         int threads = 100;
         int queues = 0;
         final  AtomicInteger atomicInteger = new AtomicInteger();
@@ -26,7 +26,7 @@ public class Main {
                 public void run() {
                     System.out.println("current task = " + atomicInteger.incrementAndGet() + "==================");
                     /*try {
-                        TimeUnit.SECONDS.sleep(1);
+                        TimeUnit.SECONDS.sleep(30);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }*/
@@ -38,7 +38,7 @@ public class Main {
             System.out.println("core task size = " + threadPoolExecutor.getTaskCount());
         }
         try {
-            TimeUnit.SECONDS.sleep(10);
+            TimeUnit.SECONDS.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
