@@ -24,7 +24,7 @@ public class MyQueue<T> {
 
     public boolean enqueue(T t) {
         if (isFull()) {
-            throw new IllegalStateException("MyCallable full");
+            throw new IllegalStateException("MyCallableExample full");
         }
         table[tail++] = t;
         if (tail == table.length) {

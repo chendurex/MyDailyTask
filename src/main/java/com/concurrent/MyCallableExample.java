@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by Administrator on 2016/8/10.
  */
-public class MyCallable {
+public class MyCallableExample {
     @Test
     public void callable() throws Exception{
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
