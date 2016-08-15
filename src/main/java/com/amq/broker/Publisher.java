@@ -34,7 +34,7 @@ class Publisher {
         String connectionURI = "tcp://" + host + ":" + port;
         String destinationName = arg(args, 0, "topic://event");
 
-        int messages = 10000;
+        int messages = 10;
         int size = 256;
 
         String DATA = "abcdefghijklmnopqrstuvwxyz";
@@ -65,9 +65,7 @@ class Publisher {
             TextMessage msg = session.createTextMessage("#:" + i);
             msg.setIntProperty("id", i);
             producer.send(msg);
-            if ((i % 1000) == 0) {
-                System.out.println(String.format("Sent %d messages", i));
-            }
+            System.out.println(String.format("Sent %d messages", i));
         }
 
         producer.send(session.createTextMessage("SHUTDOWN"));

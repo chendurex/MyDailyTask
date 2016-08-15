@@ -17,14 +17,70 @@
 package com.amq.broker;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.qpid.jms.*;
-import javax.jms.*;
+import org.apache.activemq.broker.BrokerRegistry;
+import org.apache.activemq.broker.BrokerService;
 
-class Listener extends Thread implements MessageListener,ExceptionListener {
+import javax.jms.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+class Listener extends Thread {
+    protected BrokerService brokerService;
+    protected ActiveMQConnectionFactory factory;
+    protected Connection producerConnection;
+    protected Connection consumerConnection;
+    protected Session consumerSession;
+    protected Session producerSession;
+    protected MessageConsumer consumer;
+    protected MessageProducer producer;
+    protected Topic topic;
+    protected int messageCount = 10;
+    protected int timeOutInSeconds = 10;
 
     public static void main(String[] args) {
         new Listener().start();
     }
+
+
+    protected void setUp() throws Exception {
+        /*brokerService = new BrokerService();
+        brokerService.setPersistent(false);
+        brokerService.start();*/
+
+        factory =  new ActiveMQConnectionFactory("tcp://localhost:61616");
+        consumerConnection = factory.createConnection();
+        consumerConnection.start();
+       // producerConnection = factory.createConnection();
+      //  producerConnection.start();
+        consumerSession = consumerConnection.createSession(false,Session.AUTO_ACKNOWLEDGE);
+        topic = consumerSession.createTopic("event");
+       // producerSession = producerConnection.createSession(false,Session.AUTO_ACKNOWLEDGE);
+        consumer = consumerSession.createConsumer(topic);
+       // producer = producerSession.createProducer(topic);
+    }
+
+    //@Override
+    public void run1() {
+
+        final CountDownLatch latch = new CountDownLatch(messageCount);
+
+        try {
+            setUp();
+            consumer.setMessageListener(new MessageListener() {
+                @Override
+                public void onMessage(Message message) {
+                    latch.countDown();
+                    System.out.println("enter");
+                }
+            });
+
+        latch.await(timeOutInSeconds, TimeUnit.SECONDS);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public void run() {
@@ -39,26 +95,32 @@ class Listener extends Thread implements MessageListener,ExceptionListener {
             String connectionURI = "tcp://" + host + ":" + port;
             String destinationName = "topic://event";
 
-            /*ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(connectionURI);
-            Connection connection = factory.createConnection(user, password);
+            ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(connectionURI);
+            Connection connection = factory.createConnection();
             connection.start();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-*/
-            Session session = MQProductHelper.createSession(user, password, connectionURI, false);
-            Destination destination ;
+
+            /*Destination destination ;
             if (destinationName.startsWith(TOPIC_PREFIX)) {
                 destination = session.createTopic(destinationName.substring(TOPIC_PREFIX.length()));
             } else {
                 destination = session.createQueue(destinationName);
-            }
+            }*/
+            Topic topic = session.createTopic(destinationName.substring(TOPIC_PREFIX.length()));
 
-            MessageConsumer consumer = session.createDurableSubscriber((Topic) destination, "test");
+            MessageConsumer consumer = session.createConsumer(topic);
 
-            session.setMessageListener(this);
+
+            consumer.setMessageListener(new MessageListener() {
+                @Override
+                public void onMessage(Message message) {
+                    System.out.println("enter");
+                }
+            });
             long start = System.currentTimeMillis();
             long count = 1;
             System.out.println("Waiting for messages...");
-            while (true) {
+            /*while (true) {
                 Message msg = consumer.receive();
                 if (msg instanceof TextMessage) {
                     String body = ((TextMessage) msg).getText();
@@ -89,7 +151,7 @@ class Listener extends Thread implements MessageListener,ExceptionListener {
                 } else {
                     System.out.println("Unexpected message type: " + msg.getClass());
                 }
-            }
+            }*/
         } catch (JMSException e) {
             e.printStackTrace();
         }
@@ -109,13 +171,5 @@ class Listener extends Thread implements MessageListener,ExceptionListener {
             return defaultValue;
     }
 
-    @Override
-    public void onMessage(Message message) {
-        System.out.println("enter message ====" + message);
-    }
 
-    @Override
-    public void onException(JMSException e) {
-        System.out.println(e);
-    }
 }
