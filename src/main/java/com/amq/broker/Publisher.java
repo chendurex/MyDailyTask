@@ -35,23 +35,13 @@ class Publisher {
         String destinationName = arg(args, 0, "topic://event");
 
         int messages = 10;
-        int size = 256;
-
-        String DATA = "abcdefghijklmnopqrstuvwxyz";
-        String body = "";
-        for (int i = 0; i < size; i++) {
-            body += DATA.charAt(i % DATA.length());
-        }
-
         ConnectionFactory factory = new ActiveMQConnectionFactory(connectionURI);
-
-
         Connection connection = factory.createConnection(user, password);
         connection.start();
 
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-        Destination destination = null;
+        Destination destination;
         if (destinationName.startsWith(TOPIC_PREFIX)) {
             destination = session.createTopic(destinationName.substring(TOPIC_PREFIX.length()));
         } else {
@@ -62,13 +52,11 @@ class Publisher {
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         System.out.println("send message start");
         for (int i = 1; i <= messages; i++) {
-            TextMessage msg = session.createTextMessage("#:" + i);
-            msg.setIntProperty("id", i);
-            producer.send(msg);
+            ObjectMessage objectMessage = session.createObjectMessage();
+            objectMessage.setObject(new MessageObject("chendurex -- " + i, 20));
+            producer.send(objectMessage);
             System.out.println(String.format("Sent %d messages", i));
         }
-
-        producer.send(session.createTextMessage("SHUTDOWN"));
         Thread.sleep(1000 * 3);
         connection.close();
         System.exit(0);

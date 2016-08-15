@@ -11,11 +11,8 @@ public class CompletionServiceExample {
 
     @Test
     public void execute() {
-
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-
-        CompletionService<String> taskCompletionService = new ExecutorCompletionService<>(
-                executorService);
+        CompletionService<String> taskCompletionService = new ExecutorCompletionService<>(executorService);
 
         try {
             List<Callable<String>> callables = createCallableList();
