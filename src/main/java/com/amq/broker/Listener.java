@@ -16,12 +16,9 @@
  */
 package com.amq.broker;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
-
 import javax.jms.*;
 
 class Listener extends Thread implements MessageListener {
-
     public static void main(String[] args) {
         new Listener().start();
     }
@@ -29,58 +26,29 @@ class Listener extends Thread implements MessageListener {
     @Override
     public void run() {
         try {
-            final String TOPIC_PREFIX = "queue://";
-
-            String user = env("ACTIVEMQ_USER", "admin");
-            String password = env("ACTIVEMQ_PASSWORD", "password");
-            String host = env("ACTIVEMQ_HOST", "localhost");
-            int port = Integer.parseInt(env("ACTIVEMQ_PORT", "61616"));
-
-            String connectionURI = "tcp://" + host + ":" + port;
-            String destinationName = "queue://event";
-
-            ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(connectionURI);
-            Connection connection = factory.createConnection();
-            connection.setClientID(getClass().toString());
-            connection.start();
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-            Destination destination ;
-            if (destinationName.startsWith(TOPIC_PREFIX)) {
-                destination = session.createTopic(destinationName.substring(TOPIC_PREFIX.length()));
+            Session session = MQHelper.getSession();
+            Destination destination;
+            if (JmsComstant.isTopic) {
+                destination = session.createTopic(JmsComstant.TOPIC);
             } else {
-                destination = session.createQueue(destinationName);
+                destination = session.createQueue(JmsComstant.QUEUE);
             }
-           // TopicSubscriber consumer = session.createDurableSubscriber((Topic)destination, "event");
 
-            MessageConsumer consumer = session.createConsumer(destination);
+            //TopicSubscriber consumer = session.createDurableSubscriber((Topic)destination, "test");
+
+            MessageConsumer consumer = session.createConsumer(destination, "JMSType = '" + JmsComstant.JMS_TYPE + "'");
             System.out.println("Waiting for messages...");
             consumer.setMessageListener(this);
+
         } catch (JMSException e) {
             e.printStackTrace();
         }
     }
 
-    private static String env(String key, String defaultValue) {
-        String rc = System.getenv(key);
-        if (rc == null)
-            return defaultValue;
-        return rc;
-    }
-
-    private static String arg(String[] args, int index, String defaultValue) {
-        if (index < args.length)
-            return args[index];
-        else
-            return defaultValue;
-    }
 
     @Override
     public void onMessage(Message message) {
-        try {
-            System.out.println(message);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.out.println(message);
     }
+
 }

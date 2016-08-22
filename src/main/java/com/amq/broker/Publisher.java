@@ -23,37 +23,26 @@ import javax.jms.*;
 class Publisher {
 
     public static void main(String[] args) throws Exception {
-
-        final String TOPIC_PREFIX = "topic://";
-
-        String user = env("ACTIVEMQ_USER", "admin");
-        String password = env("ACTIVEMQ_PASSWORD", "password");
-        String host = env("ACTIVEMQ_HOST", "localhost");
-        int port = Integer.parseInt(env("ACTIVEMQ_PORT", "61616"));
-
-        String connectionURI = "tcp://" + host + ":" + port;
-        String destinationName = arg(args, 0, "queue://event");
-
         int messages = 10;
-        ConnectionFactory factory = new ActiveMQConnectionFactory(connectionURI);
-        Connection connection = factory.createConnection(user, password);
+        ConnectionFactory factory = new ActiveMQConnectionFactory(JmsComstant.URL);
+        Connection connection = factory.createConnection();
         connection.start();
 
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
         Destination destination;
-        if (destinationName.startsWith(TOPIC_PREFIX)) {
-            destination = session.createTopic(destinationName.substring(TOPIC_PREFIX.length()));
+        if (JmsComstant.isTopic) {
+            destination = session.createTopic(JmsComstant.TOPIC);
         } else {
-            destination = session.createQueue(destinationName);
+            destination = session.createQueue(JmsComstant.QUEUE);
         }
-
         MessageProducer producer = session.createProducer(destination);
-        //producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         producer.setDeliveryMode(DeliveryMode.PERSISTENT);
+        producer.setDeliveryMode(JmsComstant.DELIVERY_MODE);
         System.out.println("send message start");
         for (int i = 1; i <= messages; i++) {
             ObjectMessage objectMessage = session.createObjectMessage();
+            objectMessage.setJMSType(JmsComstant.JMS_TYPE);
             objectMessage.setObject(new MessageObject("chendurex -- " + i, 20));
             producer.send(objectMessage);
             System.out.println(String.format("Sent %d messages", i));
@@ -61,20 +50,6 @@ class Publisher {
         Thread.sleep(1000 * 3);
         connection.close();
         System.exit(0);
-    }
-
-    private static String env(String key, String defaultValue) {
-        String rc = System.getenv(key);
-        if (rc == null)
-            return defaultValue;
-        return rc;
-    }
-
-    private static String arg(String[] args, int index, String defaultValue) {
-        if (index < args.length)
-            return args[index];
-        else
-            return defaultValue;
     }
 
 }
