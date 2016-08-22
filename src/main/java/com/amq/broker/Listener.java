@@ -29,7 +29,7 @@ class Listener extends Thread implements MessageListener {
     @Override
     public void run() {
         try {
-            final String TOPIC_PREFIX = "topic://";
+            final String TOPIC_PREFIX = "queue://";
 
             String user = env("ACTIVEMQ_USER", "admin");
             String password = env("ACTIVEMQ_PASSWORD", "password");
@@ -37,7 +37,7 @@ class Listener extends Thread implements MessageListener {
             int port = Integer.parseInt(env("ACTIVEMQ_PORT", "61616"));
 
             String connectionURI = "tcp://" + host + ":" + port;
-            String destinationName = "topic://event";
+            String destinationName = "queue://event";
 
             ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(connectionURI);
             Connection connection = factory.createConnection();
@@ -51,12 +51,11 @@ class Listener extends Thread implements MessageListener {
             } else {
                 destination = session.createQueue(destinationName);
             }
-            TopicSubscriber topicSubscription = session.createDurableSubscriber((Topic)destination, "test");
+           // TopicSubscriber consumer = session.createDurableSubscriber((Topic)destination, "event");
 
-           // MessageConsumer consumer = session.createConsumer(destination);
+            MessageConsumer consumer = session.createConsumer(destination);
             System.out.println("Waiting for messages...");
-            topicSubscription.setMessageListener(this);
-
+            consumer.setMessageListener(this);
         } catch (JMSException e) {
             e.printStackTrace();
         }

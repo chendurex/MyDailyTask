@@ -28,5 +28,6 @@ public class MqBroker {
        // brokerService.addConnector("tcp://localhost:61616");
         System.out.println("==================broker start==================");
         brokerService.start();
+
     }
 }

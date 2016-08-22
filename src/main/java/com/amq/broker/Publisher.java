@@ -32,7 +32,7 @@ class Publisher {
         int port = Integer.parseInt(env("ACTIVEMQ_PORT", "61616"));
 
         String connectionURI = "tcp://" + host + ":" + port;
-        String destinationName = arg(args, 0, "topic://event");
+        String destinationName = arg(args, 0, "queue://event");
 
         int messages = 10;
         ConnectionFactory factory = new ActiveMQConnectionFactory(connectionURI);
@@ -49,7 +49,8 @@ class Publisher {
         }
 
         MessageProducer producer = session.createProducer(destination);
-        producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+        //producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+        producer.setDeliveryMode(DeliveryMode.PERSISTENT);
         System.out.println("send message start");
         for (int i = 1; i <= messages; i++) {
             ObjectMessage objectMessage = session.createObjectMessage();
