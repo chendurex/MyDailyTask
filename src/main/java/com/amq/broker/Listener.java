@@ -17,24 +17,25 @@
 package com.amq.broker;
 
 import javax.jms.*;
+import java.util.concurrent.TimeUnit;
 
 class Listener extends Thread implements MessageListener {
-    public static void main(String[] args) {
+    private static Session session;
+    public static void main(String[] args) throws Exception{
+        session = MQHelper.getSession();
         new Listener().start();
+        TimeUnit.SECONDS.sleep(1000);
     }
 
     @Override
     public void run() {
         try {
-            Session session = MQHelper.getSession();
             Destination destination;
             if (JmsComstant.isTopic) {
                 destination = session.createTopic(JmsComstant.TOPIC);
             } else {
                 destination = session.createQueue(JmsComstant.QUEUE);
             }
-
-            //TopicSubscriber consumer = session.createDurableSubscriber((Topic)destination, "test");
 
             MessageConsumer consumer = session.createConsumer(destination, "JMSType = '" + JmsComstant.JMS_TYPE + "'");
             System.out.println("Waiting for messages...");
