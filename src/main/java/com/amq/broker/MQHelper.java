@@ -22,7 +22,11 @@ public class MQHelper {
     private static volatile Connection connection = null;
     private static boolean isTransaction = true;
     private static int ackMode = Session.AUTO_ACKNOWLEDGE;
-    private static final int MAX_CONNECTIN = 1;
+    private static final int MAX_CONNECTION = 1;
+    /**
+     * 当前连接最大的session数量，超过这个数量，再次创建的session默认会被阻塞
+     */
+    private static final int MAX_SESSION = 100;
     /**
      * 连接的空闲时间，默认是三十秒，因为创建连接非常消耗资源，所以尽量把时间设置的长一些
      * 如果使用了连接池，那么调用了connection.close方法，连接不是真正的关闭，而是放入到一个池，直到idleTimeOut时间到了才关闭
@@ -41,8 +45,8 @@ public class MQHelper {
     static {
         LOGGER.info("PooledConnectionFactory initializing.");
         cf.setConnectionFactory(new ActiveMQConnectionFactory(JmsComstant.URL));
-        cf.setMaxConnections(MAX_CONNECTIN);
-        cf.setMaximumActiveSessionPerConnection(100);
+        cf.setMaxConnections(MAX_CONNECTION);
+        cf.setMaximumActiveSessionPerConnection(MAX_SESSION);
         cf.setBlockIfSessionPoolIsFull(true);
         cf.setIdleTimeout(IDLE_TIME_OUT);
         cf.setExpiryTimeout(EXPIRY_TIME_OUT);
