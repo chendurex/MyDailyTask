@@ -2,7 +2,6 @@ package com.amq.broker;
 
 import org.apache.activemq.broker.BrokerFactory;
 import org.apache.activemq.broker.BrokerService;
-import org.apache.activemq.broker.jmx.ManagementContext;
 
 import java.net.URI;
 
@@ -16,7 +15,7 @@ public class MqBroker {
 
     public static void main(String[] args) throws Exception {
        // BrokerService brokerService = new BrokerService();
-         BrokerService brokerService = BrokerFactory.createBroker(new URI(JmsComstant.BROKER_URL));
+         BrokerService brokerService = BrokerFactory.createBroker(new URI(JmsConstant.BROKER_URL));
         // BrokerService broker = BrokerFactory.createBroker(new URI("xbean:com/test/activemq.xml"));
        /* in spring
        <bean id="broker" class="org.apache.activemq.xbean.BrokerFactor
@@ -25,7 +24,7 @@ public class MqBroker {
         xbean/activemq.xml" />
          <property name="start" value="true" />
           </bean>*/
-        brokerService.setBrokerName(JmsComstant.BROKER_NAME);
+        brokerService.setBrokerName(JmsConstant.BROKER_NAME);
        // brokerService.addConnector("tcp://localhost:61616");
         System.out.println("==================broker start==================");
         brokerService.start();

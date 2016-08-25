@@ -16,7 +16,9 @@
  */
 package com.amq.broker;
 
+import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.command.ActiveMQObjectMessage;
 
 import javax.jms.*;
 
@@ -29,22 +31,22 @@ class Listener extends Thread implements MessageListener {
     @Override
     public void run() {
         try {
-            ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(JmsComstant.URL);
-            Connection connection = factory.createConnection();
+            ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(JmsConstant.URL);
+            factory.setTrustAllPackages(true);
+            ActiveMQConnection connection = (ActiveMQConnection) factory.createConnection();
             connection.setClientID(getClass().toString());
             connection.start();
             this.connection = connection;
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
             Destination destination ;
-            if (JmsComstant.isTopic) {
-                destination = session.createTopic(JmsComstant.TOPIC);
+            if (JmsConstant.isTopic) {
+                destination = session.createTopic(JmsConstant.TOPIC);
             } else {
-                destination = session.createQueue(JmsComstant.QUEUE);
+                destination = session.createQueue(JmsConstant.QUEUE);
             }
             //TopicSubscriber consumer = session.createDurableSubscriber((Topic)destination, "test");
 
-            MessageConsumer consumer = session.createConsumer(destination, "JMSType = '"+JmsComstant.JMS_TYPE+"'");
+            MessageConsumer consumer = session.createConsumer(destination, "JMSType = '"+ JmsConstant.JMS_TYPE+"'");
             System.out.println("Waiting for messages...");
             consumer.setMessageListener(this);
 
@@ -63,9 +65,13 @@ class Listener extends Thread implements MessageListener {
                 String str = pro.nextElement();
                 System.out.print(str + ":" + message.getStringProperty(str));
             }*/
-            System.out.println(message);
+            ActiveMQObjectMessage objectMessage= (ActiveMQObjectMessage)message;
+            System.out.println(objectMessage.getObject());
+            System.out.println(objectMessage.getProducerId());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
 }

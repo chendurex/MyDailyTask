@@ -17,33 +17,36 @@
 package com.amq.broker;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.qpid.jms.*;
+import org.apache.activemq.command.ActiveMQObjectMessage;
+import org.apache.activemq.command.ProducerId;
+
 import javax.jms.*;
 
 class Publisher {
 
     public static void main(String[] args) throws Exception {
         int messages = 10;
-        ConnectionFactory factory = new ActiveMQConnectionFactory(JmsComstant.URL);
+        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(JmsConstant.URL);
         Connection connection = factory.createConnection();
         connection.start();
 
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
         Destination destination;
-        if (JmsComstant.isTopic) {
-            destination = session.createTopic(JmsComstant.TOPIC);
+        if (JmsConstant.isTopic) {
+            destination = session.createTopic(JmsConstant.TOPIC);
         } else {
-            destination = session.createQueue(JmsComstant.QUEUE);
+            destination = session.createQueue(JmsConstant.QUEUE);
         }
         MessageProducer producer = session.createProducer(destination);
-        producer.setDeliveryMode(JmsComstant.DELIVERY_MODE);
+        producer.setDeliveryMode(JmsConstant.DELIVERY_MODE);
         System.out.println("send message start");
         for (int i = 1; i <= messages; i++) {
-            ObjectMessage objectMessage = session.createObjectMessage();
-            objectMessage.setJMSType(JmsComstant.JMS_TYPE);
-            objectMessage.setObject(new MessageObject("chendurex -- " + i, 20));
+            ActiveMQObjectMessage objectMessage = (ActiveMQObjectMessage)session.createObjectMessage();
+            objectMessage.setJMSType(JmsConstant.JMS_TYPE);
+            objectMessage.setObject( new MessageObject("chendurex -- ", 20));
             producer.send(objectMessage);
+            objectMessage.setProducerId(new ProducerId("111"));
             System.out.println(String.format("Sent %d messages", i));
         }
         Thread.sleep(1000 * 3);
