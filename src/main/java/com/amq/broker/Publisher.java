@@ -39,6 +39,7 @@ class Publisher {
             destination = session.createQueue(JmsConstant.QUEUE);
         }
         MessageProducer producer = session.createProducer(destination);
+        producer.setDeliveryMode(DeliveryMode.PERSISTENT);
         producer.setDeliveryMode(JmsConstant.DELIVERY_MODE);
         System.out.println("send message start");
         for (int i = 1; i <= messages; i++) {

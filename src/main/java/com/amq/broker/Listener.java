@@ -21,11 +21,14 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQObjectMessage;
 
 import javax.jms.*;
+import java.util.concurrent.TimeUnit;
 
 class Listener extends Thread implements MessageListener {
-    private Connection connection = null;
-    public static void main(String[] args) {
+    private static Session session;
+    public static void main(String[] args) throws Exception{
+        session = MQHelper.getSession();
         new Listener().start();
+        TimeUnit.SECONDS.sleep(1000);
     }
 
     @Override
@@ -36,7 +39,6 @@ class Listener extends Thread implements MessageListener {
             ActiveMQConnection connection = (ActiveMQConnection) factory.createConnection();
             connection.setClientID(getClass().toString());
             connection.start();
-            this.connection = connection;
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             Destination destination ;
             if (JmsConstant.isTopic) {
@@ -44,7 +46,6 @@ class Listener extends Thread implements MessageListener {
             } else {
                 destination = session.createQueue(JmsConstant.QUEUE);
             }
-            //TopicSubscriber consumer = session.createDurableSubscriber((Topic)destination, "test");
 
             MessageConsumer consumer = session.createConsumer(destination, "JMSType = '"+ JmsConstant.JMS_TYPE+"'");
             System.out.println("Waiting for messages...");
@@ -58,20 +59,7 @@ class Listener extends Thread implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
-        try {
-           /* Enumeration<String> pro = connection.getMetaData().getJMSXPropertyNames();
-
-            while (pro.hasMoreElements()) {
-                String str = pro.nextElement();
-                System.out.print(str + ":" + message.getStringProperty(str));
-            }*/
-            ActiveMQObjectMessage objectMessage= (ActiveMQObjectMessage)message;
-            System.out.println(objectMessage.getObject());
-            System.out.println(objectMessage.getProducerId());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.out.println(message);
     }
-
 
 }

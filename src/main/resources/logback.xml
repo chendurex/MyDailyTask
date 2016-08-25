@@ -55,7 +55,7 @@
 		   <logger>可以包含零个或多个<appender-ref>元素，标识这个appender将会添加到这个logger。
 		   			如：打印到FILE和打印到控制台
 	-->
-	<logger name="com.shiro.logback" level="info" additivity="true">
+	<logger name="com.amq.broker" level="debug" additivity="true">
 		 <!-- <appender-ref ref="FILE"/> -->
 		<!-- <appender-ref ref="STDOUT" /> -->
 	</logger>
