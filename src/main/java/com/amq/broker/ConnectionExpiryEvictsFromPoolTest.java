@@ -16,16 +16,6 @@
  */
 package com.amq.broker;
 
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
-import java.util.concurrent.TimeUnit;
-
-import javax.jms.Connection;
-import javax.jms.Session;
-
-import com.amq.broker.JmsPoolTestSupport;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.TransportConnector;
@@ -34,6 +24,13 @@ import org.apache.activemq.pool.PooledConnectionFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import javax.jms.Connection;
+import javax.jms.Session;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class ConnectionExpiryEvictsFromPoolTest extends JmsPoolTestSupport {
 

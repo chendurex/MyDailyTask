@@ -16,17 +16,26 @@
  */
 package com.amq.broker;
 
-import static org.junit.Assert.fail;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.IllegalStateException;
+import javax.jms.JMSException;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.jms.pool.PooledConnection;
 import org.apache.activemq.jms.pool.PooledConnectionFactory;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 /**
  * A couple of tests against the PooledConnection class.
@@ -99,11 +108,157 @@ public class PooledConnectionTest extends JmsPoolTestSupport {
         LOG.debug("Test finished.");
     }
 
+    @Test
+    public void testPooledLifeCycle() throws Exception{
+        ConnectionFactory factory = createPooledConnectionFactory();
+        // create two connection pool
+        Connection connection1 = factory.createConnection();
+        Connection connection2 = factory.createConnection();
+        // close connection pool ,can not use pool feature
+        assertNotSame(connection1, connection2);
+        LOG.info("=-===========connection1:{}, connection2:{}", connection1 , connection2);
+        connection1.close();
+        LOG.info("=-===========connection1==={}======================", connection1);
+
+        PooledConnection pooledConnection = (PooledConnection)factory.createConnection();
+        PooledConnection pooledConnection2 = (PooledConnection)factory.createConnection();
+        // use pool feature, thought close connection ,but still alive
+        Connection connection4 = pooledConnection.getConnection();
+        Connection connection5 = pooledConnection2.getConnection();
+        assertSame(connection5, connection4);
+    }
+
+    @Test(timeout = 60000)
+    public void testClearAllConnections() throws Exception {
+
+        ActiveMQConnectionFactory amq = new ActiveMQConnectionFactory(
+                "vm://broker1?marshal=false&broker.persistent=false&broker.useJmx=false");
+        PooledConnectionFactory cf = new PooledConnectionFactory();
+        cf.setConnectionFactory(amq);
+        cf.setMaxConnections(3);
+
+        PooledConnection conn1 = (PooledConnection) cf.createConnection();
+        PooledConnection conn2 = (PooledConnection) cf.createConnection();
+        PooledConnection conn3 = (PooledConnection) cf.createConnection();
+        PooledConnection conn4 = (PooledConnection) cf.createConnection();
+
+        assertNotSame(conn1.getConnection(), conn2.getConnection());
+        assertNotSame(conn1.getConnection(), conn3.getConnection());
+        assertNotSame(conn2.getConnection(), conn3.getConnection());
+        assertSame(conn1.getConnection(), conn4.getConnection());
+
+        assertEquals(3, cf.getNumConnections());
+
+        cf.clear();
+
+        assertEquals(0, cf.getNumConnections());
+
+        conn1 = (PooledConnection) cf.createConnection();
+        conn2 = (PooledConnection) cf.createConnection();
+        conn3 = (PooledConnection) cf.createConnection();
+
+        assertNotSame(conn1.getConnection(), conn2.getConnection());
+        assertNotSame(conn1.getConnection(), conn3.getConnection());
+        assertNotSame(conn2.getConnection(), conn3.getConnection());
+
+        cf.stop();
+    }
+
+    @Test(timeout = 60000)
+    public void testFactoryStopStart() throws Exception {
+
+        ActiveMQConnectionFactory amq = new ActiveMQConnectionFactory(
+                "vm://broker1?marshal=false&broker.persistent=false&broker.useJmx=false");
+        PooledConnectionFactory cf = new PooledConnectionFactory();
+        cf.setConnectionFactory(amq);
+        cf.setMaxConnections(1);
+
+        PooledConnection conn1 = (PooledConnection) cf.createConnection();
+
+        cf.stop();
+
+        assertNull(cf.createConnection());
+
+        cf.start();
+
+        PooledConnection conn2 = (PooledConnection) cf.createConnection();
+
+        assertNotSame(conn1.getConnection(), conn2.getConnection());
+
+        assertEquals(1, cf.getNumConnections());
+
+        cf.stop();
+    }
+
+    @Test(timeout = 60000)
+    public void testConnectionsAreRotated() throws Exception {
+
+        ActiveMQConnectionFactory amq = new ActiveMQConnectionFactory(
+                "vm://broker1?marshal=false&broker.persistent=false&broker.useJmx=false");
+        PooledConnectionFactory cf = new PooledConnectionFactory();
+        cf.setConnectionFactory(amq);
+        cf.setMaxConnections(10);
+
+        Connection previous = null;
+
+        // Front load the pool.
+        for (int i = 0; i < 10; ++i) {
+            cf.createConnection();
+        }
+
+        for (int i = 0; i < 100; ++i) {
+            Connection current = ((PooledConnection) cf.createConnection()).getConnection();
+            assertNotSame(previous, current);
+            previous = current;
+        }
+
+        cf.stop();
+    }
+
+    @Test(timeout = 60000)
+    public void testConnectionsArePooledAsyncCreate() throws Exception {
+
+        final ActiveMQConnectionFactory amq = new ActiveMQConnectionFactory(
+                "vm://broker1?marshal=false&broker.persistent=false&broker.useJmx=false");
+        final PooledConnectionFactory cf = new PooledConnectionFactory();
+        cf.setConnectionFactory(amq);
+        cf.setMaxConnections(2);
+
+        final ConcurrentLinkedQueue<PooledConnection> connections = new ConcurrentLinkedQueue<PooledConnection>();
+
+        final PooledConnection primary = (PooledConnection) cf.createConnection();
+        final ExecutorService executor = Executors.newFixedThreadPool(10);
+        final int numConnections = 100;
+
+        for (int i = 0; i < numConnections; ++i) {
+            executor.execute(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        connections.add((PooledConnection) cf.createConnection());
+                    } catch (JMSException e) {
+                    }
+                }
+            });
+        }
+
+        executor.shutdown();
+        assertTrue(executor.awaitTermination(25, TimeUnit.SECONDS));
+
+        for (PooledConnection connection : connections) {
+            assertSame(primary.getConnection(), connection.getConnection());
+        }
+
+        connections.clear();
+        cf.stop();
+    }
+
     protected ConnectionFactory createPooledConnectionFactory() {
         PooledConnectionFactory cf = new PooledConnectionFactory();
         cf.setConnectionFactory(new ActiveMQConnectionFactory(
                 "vm://localhost?broker.persistent=false&broker.useJmx=false&broker.schedulerSupport=false"));
-        cf.setMaxConnections(1);
+        cf.setMaxConnections(2);
         LOG.debug("ConnectionFactory initialized.");
         return cf;
     }

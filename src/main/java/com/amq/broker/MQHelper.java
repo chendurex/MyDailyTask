@@ -79,7 +79,6 @@ public class MQHelper {
                     LOGGER.error("create connection error, error msg : ", e);
                 }
             });
-            latch.countDown();
         } catch (JMSException e) {
            // ignore
         }
