@@ -61,7 +61,7 @@ public class PooledConnectionFactoryMaximumActiveTest extends JmsPoolTestSupport
     @Test(timeout = 60000)
     public void testApp() throws Exception {
         // Initialize JMS connection
-        ActiveMQConnectionFactory amq = new ActiveMQConnectionFactory(JmsComstant.VM_URL);
+        ActiveMQConnectionFactory amq = new ActiveMQConnectionFactory(JmsConstant.VM_URL);
 
         PooledConnectionFactory cf = new PooledConnectionFactory();
         cf.setConnectionFactory(amq);

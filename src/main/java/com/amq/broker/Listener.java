@@ -27,8 +27,10 @@ class Listener extends Thread implements MessageListener {
     private static Session session;
     public static void main(String[] args) throws Exception{
         session = MQHelper.getSession();
-        new Listener().start();
-        TimeUnit.SECONDS.sleep(1000);
+        Thread t = new Listener();
+        t.setDaemon(true);
+        t.start();
+       // TimeUnit.SECONDS.sleep(1000);
     }
 
     @Override

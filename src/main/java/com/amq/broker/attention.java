@@ -23,5 +23,9 @@ public class attention {
      * 4，PooledConnectionFactory.setBlockIfSessionPoolIsFull(false)，当session满了，而且设置了非阻塞，那么在此获取session时会抛异常，
      * 如果设置为阻塞，并且线程模式是同步的话，那么在同一个connection千万别连续获取多个session，可能导致前面的session未执行完毕，后面获取不了session
      * 出现线程阻塞无法释放
+     *
+     * 5，不管是connection、session、product、consumer、message都需要为每个对象设置一个唯一ID，用于溯源跟踪与消息重复验证
+     *
+     * 6，producer设置time_to_live时间太短，发送消息的时候会验证producer是否过期，如果过期则会抛出session timeOutException
      */
 }

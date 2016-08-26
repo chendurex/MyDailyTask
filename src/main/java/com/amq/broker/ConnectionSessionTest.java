@@ -1,16 +1,19 @@
 package com.amq.broker;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.jms.pool.PooledConnection;
 import org.apache.activemq.jms.pool.PooledConnectionFactory;
+import org.apache.activemq.jms.pool.PooledProducer;
+import org.apache.activemq.jms.pool.PooledTopicPublisher;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jms.Connection;
-import javax.jms.JMSException;
-import javax.jms.Session;
+import javax.jms.*;
 import java.util.concurrent.*;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
 /**
@@ -105,5 +108,32 @@ public class ConnectionSessionTest {
             // all good, test succeeded
             return new Boolean(true);
         }
+    }
+
+
+    @Test(timeout = 60000)
+    public void testPooledSessionStats() throws Exception {
+        PooledConnection connection = (PooledConnection) createPooledConnectionFactory().createConnection();
+
+        assertEquals(0, connection.getNumActiveSessions());
+        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        assertEquals(1, connection.getNumActiveSessions());
+        session.close();
+        assertEquals(0, connection.getNumActiveSessions());
+        assertEquals(1, connection.getNumtIdleSessions());
+        assertEquals(1, connection.getNumSessions());
+
+        connection.close();
+    }
+
+
+
+    protected ConnectionFactory createPooledConnectionFactory() {
+        PooledConnectionFactory cf = new PooledConnectionFactory();
+        cf.setConnectionFactory(new ActiveMQConnectionFactory(
+                "vm://localhost?broker.persistent=false&broker.useJmx=false&broker.schedulerSupport=false"));
+        cf.setMaxConnections(2);
+        LOG.debug("ConnectionFactory initialized.");
+        return cf;
     }
 }

@@ -3,8 +3,8 @@ package com.amq.broker;
 
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.jms.pool.PooledConnection;
 import org.apache.activemq.jms.pool.PooledConnectionFactory;
-import org.apache.activemq.pool.PooledConnection;
 import org.apache.activemq.util.IdGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class MQHelper {
 
     static {
         LOGGER.info("PooledConnectionFactory initializing.");
-        cf.setConnectionFactory(new ActiveMQConnectionFactory(JmsComstant.URL));
+        cf.setConnectionFactory(new ActiveMQConnectionFactory(JmsConstant.URL));
         cf.setMaxConnections(MAX_CONNECTION);
         cf.setMaximumActiveSessionPerConnection(MAX_SESSION);
         cf.setBlockIfSessionPoolIsFull(true);
