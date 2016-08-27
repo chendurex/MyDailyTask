@@ -114,18 +114,25 @@ public class PooledConnectionTest extends JmsPoolTestSupport {
         // create two connection pool
         Connection connection1 = factory.createConnection();
         Connection connection2 = factory.createConnection();
+
         // close connection pool ,can not use pool feature
-        assertNotSame(connection1, connection2);
         LOG.info("=-===========connection1:{}, connection2:{}", connection1 , connection2);
         connection1.close();
         LOG.info("=-===========connection1==={}======================", connection1);
 
         PooledConnection pooledConnection = (PooledConnection)factory.createConnection();
         PooledConnection pooledConnection2 = (PooledConnection)factory.createConnection();
+        // although set maxConnections of per factory, but this is use for that the same connectionKey(username + password)
+        // so , maxConnections real use for per connectionKey
+        PooledConnection pooledConnection3 = (PooledConnection)factory.createConnection("1", "2");
         // use pool feature, thought close connection ,but still alive
         Connection connection4 = pooledConnection.getConnection();
         Connection connection5 = pooledConnection2.getConnection();
-        assertSame(connection5, connection4);
+        Connection connection6 = pooledConnection3.getConnection();
+        //assertSame(connection5, connection4);
+        assertNotSame(connection4, connection5);
+        assertNotSame(connection4, connection6);
+        assertNotSame(connection5, connection6);
     }
 
     @Test(timeout = 60000)
