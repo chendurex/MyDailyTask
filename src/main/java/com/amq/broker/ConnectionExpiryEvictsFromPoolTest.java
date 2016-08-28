@@ -97,13 +97,6 @@ public class ConnectionExpiryEvictsFromPoolTest extends JmsPoolTestSupport {
         pooledFactory.setIdleTimeout(60);
         Connection connection = pooledFactory.createConnection();
         Connection amq1 = ((PooledConnection) connection).getConnection();
-        Session session = connection.createSession(true,1);
-        MessageProducer producer = session.createProducer(session.createQueue(JmsConstant.QUEUE));
-        ActiveMQObjectMessage objectMessage = (ActiveMQObjectMessage)session.createObjectMessage();
-        objectMessage.setJMSType(JmsConstant.JMS_TYPE);
-        objectMessage.setObject( new MessageObject("chendurex -- ", 20));
-        producer.send(objectMessage);
-
         connection.close();
         // let it expire while in use
         TimeUnit.MILLISECONDS.sleep(50);
