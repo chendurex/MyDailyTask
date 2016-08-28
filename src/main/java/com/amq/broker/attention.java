@@ -47,9 +47,14 @@ public class attention {
      * 同样的道理，PooledConnectionFactory.setMaximumActiveSessionPerConnection参数，也是针对同一个key(key=transaction+ackMode)
      * 那么真实最多可以产生的maxSession=key*maxActiveSession
      *
-     * 9，Connection connection1 = PooledConnectionFactory.createConnection();与
+     * 9，Connection c1 = PooledConnectionFactory.createConnection();与
      * PooledConnection pooledConnection = (PooledConnection)factory.createConnection();
-     * Connection connection2 = pooledConnection.getConnection();区别
+     * Connection c2 = pooledConnection.getConnection();区别：
+     * c1其实是一个PooledConnection的实现，本身是不持有任何的连接，而是代理了ConnectionPool，真正持有连接的ConnectionPool，
+     * 调用c1.close仅仅是把当前代理关闭了，而并非关闭了真正的连接，达到连接复用的效果。
+     * c2才持有真实的连接，它的连接池是基于commons-pool2的连接池实现，调用c2.close则是关闭了当前连接，而间接关闭了
+     * 关闭了真实的连接，并非做到连接池的效果，如果确实需要关闭真实连接则采用c2的方式，否则建议采用c1的获取连接方式
+     * 注：
      *
      */
 }

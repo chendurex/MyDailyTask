@@ -19,6 +19,7 @@ package com.amq.broker;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.TransportConnector;
+import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.apache.activemq.pool.PooledConnection;
 import org.apache.activemq.pool.PooledConnectionFactory;
 import org.junit.After;
@@ -26,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.jms.Connection;
+import javax.jms.MessageProducer;
 import javax.jms.Session;
 import java.util.concurrent.TimeUnit;
 
@@ -47,7 +49,7 @@ public class ConnectionExpiryEvictsFromPoolTest extends JmsPoolTestSupport {
         brokerService.setPersistent(false);
         brokerService.setSchedulerSupport(false);
         brokerService.setAdvisorySupport(false);
-        TransportConnector connector = brokerService.addConnector("tcp://localhost:0");
+        TransportConnector connector = brokerService.addConnector("tcp://localhost:61616");
         brokerService.start();
         factory = new ActiveMQConnectionFactory("mock:" + connector.getConnectUri());
         pooledFactory = new PooledConnectionFactory();
@@ -80,8 +82,9 @@ public class ConnectionExpiryEvictsFromPoolTest extends JmsPoolTestSupport {
 
         PooledConnection connection2 = (PooledConnection) pooledFactory.createConnection();
         Connection amq2 = connection2.getConnection();
-        amq2.close();
+        connection2.close();
 
+        // reuse can reset idleTimeOut
         TimeUnit.MILLISECONDS.sleep(60);
         PooledConnection connection3 = (PooledConnection) pooledFactory.createConnection();
         Connection amq3 = connection3.getConnection();
@@ -90,20 +93,27 @@ public class ConnectionExpiryEvictsFromPoolTest extends JmsPoolTestSupport {
 
     @Test(timeout = 60000)
     public void testEvictionOfExpired() throws Exception {
-        pooledFactory.setExpiryTimeout(1000);
-        //pooledFactory.setIdleTimeout(1000);
+        pooledFactory.setExpiryTimeout(100);
+        pooledFactory.setIdleTimeout(60);
         Connection connection = pooledFactory.createConnection();
         Connection amq1 = ((PooledConnection) connection).getConnection();
+        Session session = connection.createSession(true,1);
+        MessageProducer producer = session.createProducer(session.createQueue(JmsConstant.QUEUE));
+        ActiveMQObjectMessage objectMessage = (ActiveMQObjectMessage)session.createObjectMessage();
+        objectMessage.setJMSType(JmsConstant.JMS_TYPE);
+        objectMessage.setObject( new MessageObject("chendurex -- ", 20));
+        producer.send(objectMessage);
 
-        // let it expire while in use
-        TimeUnit.MILLISECONDS.sleep(1500);
         connection.close();
+        // let it expire while in use
+        TimeUnit.MILLISECONDS.sleep(50);
 
-       Connection connection2 = pooledFactory.createConnection();
+
+        Connection connection2 = pooledFactory.createConnection();
         Connection amq2 = ((PooledConnection) connection2).getConnection();
-       // assertTrue("is equal", amq1.equals(amq2));
-
-        TimeUnit.SECONDS.sleep(2);
+        assertTrue("is equal", amq1.equals(amq2));
+        connection2.close();
+        TimeUnit.MILLISECONDS.sleep(50);
         Connection connection3 = pooledFactory.createConnection();
         Connection amq3 = ((PooledConnection) connection3).getConnection();
         assertTrue("is equal", amq1.equals(amq3));
