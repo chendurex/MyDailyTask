@@ -22,5 +22,6 @@ public class target {
      * 6，众多的subscribe中，如果其中一个消费失败了，是怎么后续处理消费的，是重新发送到broker还是发送到失败的broker，由原来的连接再次消费吗
      * 是否有实现如果消费失败，则放入到失败的topic，然后每个subscribe默认也订阅了当前topic的失败topic，然后可以再次消费，或者交给集群中的其它消费者消费
      *
+     * 7，amq提供了advisor topic可以订阅，用于监控amq的运行状态，实现预警功能
      */
 }
