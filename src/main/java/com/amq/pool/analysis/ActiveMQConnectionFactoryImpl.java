@@ -33,14 +33,15 @@ package com.amq.pool.analysis;
  * 5.6，closeTimeout：连接关闭超时，默认15000ms。client close掉connection时，是需要向broker发送close的请求，假如broker被阻塞
  *      或者已经宕机，那么请求无法响应，直接影响client连接无法释放，设置超时时间则可以防止此事发生
  *
- * 5.7，sendTimeout：
- * 5.8，connectResponseTimeout：
+ * 5.7，sendTimeout：发送消息超时设置，默认0不超时。如果>0，那么到达超时时间后，消息发送失败
+ *
+ * 5.8，connectResponseTimeout：连接超时设置，默认0不超时。如果>0，那么请求连接达到超时时间后，连接提示失败，否则会一直阻塞直到连接成功。
  *
  * 5.9，objectMessageSerializationDefered：When an object is set on an ObjectMessage,
  *      the JMS spec requires the object to be serialized by that set method. Enabling this flag causes the object to not get serialized.
  *      The object may subsequently get serialized if the message needs to be sent over a socket or stored to disk.
  *
- * 5.10，statsEnabled：
+ * 5.10，statsEnabled：是否分析连接状态，默认false。开启模式，会有连接监听每个连接的状态，并分析结果，再开启一个消费者监听消息
  *
  * 5.11，dispatchAsync：broker异步发送消息到consumer，默认是false。如果设置为true，那么每次发送消息都是创建一个线程发送消息到
  *       consumer，对于消费能力非常低的，可以使用异步，防止broker被其中的某个consumer阻塞无法返回。但是一般情况还是建议采用同步，
@@ -58,7 +59,7 @@ package com.amq.pool.analysis;
  * 5.15，alwaysSessionAsync：是否使用异步session，默认true。使用异步则表示每个session都是一个线程在处理(需要控制下线程池大小)
  *
  * 5.16，watchTopicAdvisories：
- * 5.17，blobTransferPolicy：
+ * 5.17，checkForDuplicates：检查消息是否重复，默认true，主要是根据messageId做重复性检查，所以建议每天消息都带上messageId
  *
  * 5.18，useRetroactiveConsumer：是否启用溯源消息，默认false。在 non-durable topic subscribers订阅topic时，topic之前发送的
  *       消息是否也推送给当前consumer
@@ -70,7 +71,8 @@ package com.amq.pool.analysis;
  *
  * 5.21，useCompression：是否启用压缩消息体，默认false。如果发送的消息非常的大的话，可以启用压缩的消息
  *
- * 5.22，producerWindowSize：
+ * 5.22，producerWindowSize：每次发送消息的大小，默认0，就是不限制。如果在多线程使用同一个连接的情况下，而且发送的数据比较大，
+ *       会导致连接被阻塞，显式的控制大小可以保证稳定性。http://activemq.apache.org/producer-flow-control.html
  *
  * 5.23，copyMessageOnSend：是否发送一个消息的副本给broker，默认true。如果设置为true，那么每次都是复制了一份message的副本给
  *       broker，保证原始的message的不可变性。(这里我也没明白为什么要复制一个副本，跟踪到源码后，发现仅仅是设置了一些感觉没用
@@ -79,16 +81,19 @@ package com.amq.pool.analysis;
  * 5.24，disableTimeStampsByDefault：是否发送timeStamp时间戳，默认true。如果设置false，那么发送的消息不带有时间戳，这个时间是
  *       broker 设置的，因为发送消息可能出现延迟，所以时间也可能出现延误。数据量大的情况，而且对于时间戳可以不使用的情况，可以关闭
  *
- * 5.25，prefetchPolicy：
- * 5.26，auditDepth：default 2048，The size of the message window that will be audited (for duplicates and out of order messages
- * 5.27，auditMaximumProducerNumber：default 64， Maximum number of producers that will be audited
+ * 5.25，prefetchPolicy：prefetch代理对象，默认实现ActiveMQPrefetchPolicy。http://activemq.apache.org/what-is-the-prefetch-limit-for.html
  *
- * 5.28，checkForDuplicates：检查消息是否重复，默认true，主要是根据messageId做重复性检查
+ * 5.26，redeliveryPolicy：异常消息重发模式，默认实现是RedeliveryPolicy。主要是事物型消息出现异常，消息会被存储到一个临时队列，
+ *       然后再由broker重新发送，具体策略可以查看http://activemq.apache.org/redelivery-policy.html
+ *
+ * 5.27，nonBlockingRedelivery：异常消息发送方式，默认阻塞。与redeliveryPolicy配合功能
+ *
+ * 5.28，blobTransferPolicy：大文本数据发送模式，默认实现BlobTransferPolicy。
  *
  * 5.29，messagePrioritySupported：
  * 5.30，transactedIndividualAck：
- * 5.31，nonBlockingRedelivery：
- * 5.32，redeliveryPolicy：
+ * 5.31，auditMaximumProducerNumber：default 64， Maximum number of producers that will be audited
+ * 5.32，auditDepth：default 2048，The size of the message window that will be audited (for duplicates and out of order messages
  * 5.33，consumerFailoverRedeliveryWaitPeriod：
  * 5.34，rmIdFromConnectionId：
  * 5.35，consumerExpiryCheckEnabled：检查消息是否过期，默认true。若不开启，则会消费已经过期的消息
