@@ -28,7 +28,9 @@ package com.amq.pool.analysis;
  *      2，持久订阅时，必须是clientId+topic合并 才能确定一个唯一ID，所以为了以后扩展每次都设置。
  *      默认是采用getClassName方式设置，保证可以很清晰知道是哪个类产生的消息做负载的时候也方便扩展
  *
- * 5.5，maxThreadPoolSize：
+ * 5.5，maxThreadPoolSize：线程池大小，默认1000，如果使用异步session，那么每个session一个线程，阻塞队列是SynchronousQueue，
+ *      表示不直接使用阻塞队列，超过的session数量直接被拒绝，这里可以配合perSessionForConnection
+ *      http://activemq.apache.org/how-to-deal-with-large-number-of-threads-in-clients.html
  *
  * 5.6，closeTimeout：连接关闭超时，默认15000ms。client close掉connection时，是需要向broker发送close的请求，假如broker被阻塞
  *      或者已经宕机，那么请求无法响应，直接影响client连接无法释放，设置超时时间则可以防止此事发生
@@ -51,14 +53,15 @@ package com.amq.pool.analysis;
  * 5.12，useAsyncSend：是否使用异步发送消息，默认false。如果使用异步那么消息发送出去会立即返回。在有事物或者消息安全性非常高的
  *       情况下，最好是使用同步，保证消息的可靠性。如果是对于高性能，但是消息可以丢失的情况，那么使用异步也是不错的选择
  *
- * 5.13，sendAcksAsync：
+ * 5.13，sendAcksAsync：是否异步接收ack，默认false。
  *
  * 5.14，alwaysSyncSend：是否全部使用异步发送消息，默认false。这个跟useAsyncSend类似，但是有一点不同，useAsyncSend还是会获取
  *       broker的消息回复从而再次做进异步处理，而alwaysSyncSend相当于把消息丢到broker则后续可以不管了，有点类似UDP连接
  *
  * 5.15，alwaysSessionAsync：是否使用异步session，默认true。使用异步则表示每个session都是一个线程在处理(需要控制下线程池大小)
  *
- * 5.16，watchTopicAdvisories：
+ * 5.16，watchTopicAdvisories：是否开启监控broker对于消息的监控，默认true。可以通过订阅advisory消息，监控broker的变化
+ *
  * 5.17，checkForDuplicates：检查消息是否重复，默认true，主要是根据messageId做重复性检查，所以建议每天消息都带上messageId
  *
  * 5.18，useRetroactiveConsumer：是否启用溯源消息，默认false。在 non-durable topic subscribers订阅topic时，topic之前发送的
@@ -71,8 +74,8 @@ package com.amq.pool.analysis;
  *
  * 5.21，useCompression：是否启用压缩消息体，默认false。如果发送的消息非常的大的话，可以启用压缩的消息
  *
- * 5.22，producerWindowSize：每次发送消息的大小，默认0，就是不限制。如果在多线程使用同一个连接的情况下，而且发送的数据比较大，
- *       会导致连接被阻塞，显式的控制大小可以保证稳定性。http://activemq.apache.org/producer-flow-control.html
+ * 5.22，producerWindowSize：每次发送消息的大小，默认0，就是不限制。如果数据量比较大，而且频繁非常高，会导致oom异常。
+ *       在这样的场景下，可以由客户端控制消息大小。http://activemq.apache.org/producer-flow-control.html
  *
  * 5.23，copyMessageOnSend：是否发送一个消息的副本给broker，默认true。如果设置为true，那么每次都是复制了一份message的副本给
  *       broker，保证原始的message的不可变性。(这里我也没明白为什么要复制一个副本，跟踪到源码后，发现仅仅是设置了一些感觉没用
@@ -90,7 +93,8 @@ package com.amq.pool.analysis;
  *
  * 5.28，blobTransferPolicy：大文本数据发送模式，默认实现BlobTransferPolicy。
  *
- * 5.29，messagePrioritySupported：
+ * 5.29，messagePrioritySupported：是否支持消息优先级发送，默认true
+ *
  * 5.30，transactedIndividualAck：
  * 5.31，auditMaximumProducerNumber：default 64， Maximum number of producers that will be audited
  * 5.32，auditDepth：default 2048，The size of the message window that will be audited (for duplicates and out of order messages
