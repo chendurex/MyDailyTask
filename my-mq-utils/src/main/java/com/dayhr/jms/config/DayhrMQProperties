@@ -1,0 +1,9 @@
+#connection default config
+connection.maxConnections=2
+connection.maximumActiveSessionPerConnection=100
+connection.idleTimeout=100000
+connection.blockIfSessionPoolIsFull=true
+connection.blockIfSessionPoolIsFullTimeout=100000
+connection.reconnectOnException=true
+
+#session default config
