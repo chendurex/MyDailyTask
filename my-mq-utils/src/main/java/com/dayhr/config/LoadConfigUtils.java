@@ -1,4 +1,4 @@
-package com.dayhr.jms.config;
+package com.dayhr.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,11 +7,11 @@ import java.lang.reflect.Method;
 import java.util.Properties;
 
 /**
- * package com.dayhr.jms.config
+ * package com.dayhr.config
  * description
  * Created by chen on 2016/8/31.
  */
-public class LoadConfigUtils {
+class LoadConfigUtils {
     static Logger LOGGER = LoggerFactory.getLogger(LoadConfigUtils.class);
 
     static final Properties configProp = PropertiesUtils.configProp;

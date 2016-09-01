@@ -6,5 +6,5 @@ package com.dayhr.jms.activemq;
  * @pachage com.dayhr.jms
  * @date 2016/8/31 11:06
  */
-class AMQQueueConsumer {
+public class AMQQueueConsumer {
 }
