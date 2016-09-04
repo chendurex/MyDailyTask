@@ -1,5 +1,7 @@
 package com.dayhr.jms;
 
+import com.dayhr.config.DayhrUserConnectionConfig;
+
 import javax.jms.JMSException;
 
 /**
@@ -11,7 +13,13 @@ import javax.jms.JMSException;
 public interface DayhrPooledConnectionFactory {
     DayhrConnection createConnection() throws JMSException;
 
+    DayhrConnection createConnection(DayhrUserConnectionConfig userConfig) throws JMSException;
+
     DayhrQueueConnection createQueueConnection() throws JMSException;
 
+    DayhrQueueConnection createQueueConnection(DayhrUserConnectionConfig userConfig) throws JMSException;
+
     DayhrTopicConnection createTopicConnection() throws JMSException;
+
+    DayhrTopicConnection createTopicConnection(DayhrUserConnectionConfig userConfig) throws JMSException;
 }

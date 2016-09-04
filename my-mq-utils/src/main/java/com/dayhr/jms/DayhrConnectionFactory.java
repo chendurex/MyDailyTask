@@ -1,6 +1,6 @@
 package com.dayhr.jms;
 
-import com.dayhr.config.DayhrConnectionConfig;
+import com.dayhr.config.DayhrDefaultConnectionConfig;
 
 /**
  * @author chen
@@ -10,5 +10,5 @@ import com.dayhr.config.DayhrConnectionConfig;
  */
 public interface DayhrConnectionFactory {
     DayhrConnection createConnection();
-    DayhrConnection createConnection(DayhrConnectionConfig config);
+    DayhrConnection createConnection(DayhrDefaultConnectionConfig config);
 }

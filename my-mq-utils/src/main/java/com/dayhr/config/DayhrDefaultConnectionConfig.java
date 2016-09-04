@@ -9,8 +9,10 @@ import org.slf4j.LoggerFactory;
  * @pachage com.dayhr.config
  * @date 2016/8/31 10:46
  */
-public class DayhrConnectionConfig {
-    static Logger LOGGER = LoggerFactory.getLogger(DayhrConnectionConfig.class);
+public class DayhrDefaultConnectionConfig {
+    private static final DayhrDefaultConnectionConfig DEFAULT_CONNECTION_CONFIG = new DayhrDefaultConnectionConfig();
+    static Logger LOGGER = LoggerFactory.getLogger(DayhrDefaultConnectionConfig.class);
+    private boolean isPrintConfigProperties;
     private int maxConnections;
     private int maximumActiveSessionPerConnection;
     private int idleTimeout;
@@ -18,8 +20,14 @@ public class DayhrConnectionConfig {
     private long blockIfSessionPoolIsFullTimeout;
     private boolean reconnectOnException;
 
+    private DayhrDefaultConnectionConfig() {}
+
+    public static DayhrDefaultConnectionConfig getInstance() {
+        return DEFAULT_CONNECTION_CONFIG;
+    }
     {
         try {
+            isPrintConfigProperties = LoadConfigUtils.findBooleanValueFromProperties("connection.isPrintConfigProperties");
             maxConnections = LoadConfigUtils.findIntValueFromProperties("connection.maxConnections");
             maximumActiveSessionPerConnection = LoadConfigUtils.findIntValueFromProperties("connection.maximumActiveSessionPerConnection");
             idleTimeout = LoadConfigUtils.findIntValueFromProperties("connection.idleTimeout");
@@ -35,47 +43,27 @@ public class DayhrConnectionConfig {
         return maxConnections;
     }
 
-    public void setMaxConnections(int maxConnections) {
-        this.maxConnections = maxConnections;
-    }
-
     public int getMaximumActiveSessionPerConnection() {
         return maximumActiveSessionPerConnection;
-    }
-
-    public void setMaximumActiveSessionPerConnection(int maximumActiveSessionPerConnection) {
-        this.maximumActiveSessionPerConnection = maximumActiveSessionPerConnection;
     }
 
     public int getIdleTimeout() {
         return idleTimeout;
     }
 
-    public void setIdleTimeout(int idleTimeout) {
-        this.idleTimeout = idleTimeout;
-    }
-
     public boolean isBlockIfSessionPoolIsFull() {
         return blockIfSessionPoolIsFull;
-    }
-
-    public void setBlockIfSessionPoolIsFull(boolean blockIfSessionPoolIsFull) {
-        this.blockIfSessionPoolIsFull = blockIfSessionPoolIsFull;
     }
 
     public long getBlockIfSessionPoolIsFullTimeout() {
         return blockIfSessionPoolIsFullTimeout;
     }
 
-    public void setBlockIfSessionPoolIsFullTimeout(long blockIfSessionPoolIsFullTimeout) {
-        this.blockIfSessionPoolIsFullTimeout = blockIfSessionPoolIsFullTimeout;
-    }
-
     public boolean isReconnectOnException() {
         return reconnectOnException;
     }
 
-    public void setReconnectOnException(boolean reconnectOnException) {
-        this.reconnectOnException = reconnectOnException;
+    public boolean isPrintConfigProperties() {
+        return isPrintConfigProperties;
     }
 }

@@ -1,4 +1,5 @@
 #connection default config
+connection.isPrintConfigProperties=false
 connection.maxConnections=2
 connection.maximumActiveSessionPerConnection=100
 connection.idleTimeout=100000

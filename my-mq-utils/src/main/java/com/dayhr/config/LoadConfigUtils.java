@@ -11,7 +11,7 @@ import java.util.Properties;
  * description
  * Created by chen on 2016/8/31.
  */
-class LoadConfigUtils {
+public class LoadConfigUtils {
     static Logger LOGGER = LoggerFactory.getLogger(LoadConfigUtils.class);
 
     static final Properties configProp = PropertiesUtils.configProp;
@@ -28,7 +28,7 @@ class LoadConfigUtils {
         return Boolean.parseBoolean(configProp.getProperty(prop));
     }
 
-    final static <T>String printConfigValue(T printObj) {
+    public static final <T>String printConfigValue(T printObj) {
         Method[] methods = printObj.getClass().getDeclaredMethods();
         StringBuilder sb = new StringBuilder();
         sb.append("打印配置文件信息:\n");

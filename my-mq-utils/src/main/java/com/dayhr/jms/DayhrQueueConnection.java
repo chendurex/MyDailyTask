@@ -6,5 +6,5 @@ package com.dayhr.jms;
  * package com.dayhr.jms
  * @date 23:31
  */
-public interface DayhrQueueConnection {
+public interface DayhrQueueConnection extends DayhrConnection {
 }
