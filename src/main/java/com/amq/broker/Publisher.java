@@ -17,6 +17,7 @@
 package com.amq.broker;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.command.ActiveMQDestination;
 import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.apache.activemq.command.ProducerId;
 
@@ -40,11 +41,12 @@ class Publisher {
         }
         MessageProducer producer = session.createProducer(destination);
         producer.setDeliveryMode(DeliveryMode.PERSISTENT);
-        producer.setDeliveryMode(JmsConstant.DELIVERY_MODE);
+        //producer.setDeliveryMode(JmsConstant.DELIVERY_MODE);
         System.out.println("send message start");
         for (int i = 1; i <= messages; i++) {
             ActiveMQObjectMessage objectMessage = (ActiveMQObjectMessage)session.createObjectMessage();
             objectMessage.setJMSType(JmsConstant.JMS_TYPE);
+            objectMessage.setJMSReplyTo(session.createTemporaryQueue());
             objectMessage.setObject( new MessageObject("chendurex -- ", 20));
             producer.send(objectMessage);
             objectMessage.setProducerId(new ProducerId("111"));

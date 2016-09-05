@@ -14,5 +14,5 @@ public interface JmsConstant {
     String QUEUE = "queue://event";
     int DELIVERY_MODE = DeliveryMode.NON_PERSISTENT;
     String JMS_TYPE = "TEST";
-    boolean isTopic = true;
+    boolean isTopic = false;
 }

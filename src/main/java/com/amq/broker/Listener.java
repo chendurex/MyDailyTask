@@ -16,6 +16,9 @@
  */
 package com.amq.broker;
 
+import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.ActiveMQConnectionFactory;
+
 import javax.jms.*;
 import java.util.concurrent.TimeUnit;
 
@@ -33,13 +36,13 @@ class Listener extends Thread implements MessageListener {
     @Override
     public void run() {
         try {
-            /*ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(JmsConstant.URL);
+            ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(JmsConstant.URL);
             factory.setTrustAllPackages(true);
             ActiveMQConnection connection = (ActiveMQConnection) factory.createConnection();
             connection.setClientID(getClass().toString());
             connection.start();
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            */
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
             Destination destination ;
             if (JmsConstant.isTopic) {
                 destination = session.createTopic(JmsConstant.TOPIC);
@@ -47,7 +50,8 @@ class Listener extends Thread implements MessageListener {
                 destination = session.createQueue(JmsConstant.QUEUE);
             }
             replyProducer = session.createProducer(null);
-            replyProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+            //replyProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+            replyProducer.setDeliveryMode(DeliveryMode.PERSISTENT);
 
             MessageConsumer consumer = session.createConsumer(destination, "JMSType = '"+ JmsConstant.JMS_TYPE+"'");
 
@@ -99,14 +103,16 @@ class Listener extends Thread implements MessageListener {
     }
 
     private void sendNextMsg(Message message) throws Exception {
-            //Session session = connection.createSession(false, ackMode);
-            Session session = MQHelper.getSession();
-
-            Destination destination = session.createQueue("sssssssssssssssssssss");
-            MessageProducer producer = session.createProducer(destination);
-            producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-            // 发送消息
-            producer.send(message);
+        //Session session = connection.createSession(false, ackMode);
+        //Session session = MQHelper.getSession();
+        TextMessage response = this.session.createTextMessage();
+        response.setJMSCorrelationID(message.getJMSCorrelationID());
+        this.replyProducer.send(message.getJMSReplyTo(), response);
+       // Destination destination = session.createQueue("sssssssssssssssssssss");
+       // MessageProducer producer = session.createProducer(destination);
+      // producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+        // 发送消息
+      //  producer.send(message);
 
         }
 }
