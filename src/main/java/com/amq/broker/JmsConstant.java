@@ -6,7 +6,7 @@ import javax.jms.DeliveryMode;
  * Created by Administrator on 2016/8/18.
  */
 public interface JmsConstant {
-    String URL = "failover:(tcp://localhost:61616)?maxReconnectAttempts=-1&timeout=2000&jms.prefetchPolicy.all=1";
+    String URL = "failover:(tcp://localhost:61616)?initialReconnectDelay=100";
     String VM_URL = "vm://broker1?marshal=false&broker.useJmx=false&broker.persistent=false";
     String BROKER_URL = "broker:tcp://localhost:61616";
     String BROKER_NAME = "MY_BROKER";

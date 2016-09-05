@@ -95,11 +95,6 @@
         <!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-core -->
         <dependency>
             <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-core</artifactId>
-            <version>${activemq.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-broker</artifactId>
             <version>${activemq.version}</version>
         </dependency>

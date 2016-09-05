@@ -43,14 +43,12 @@ public class MQHelper {
     private static long EXPIRY_TIME_OUT = 0l;
 
     static {
-        LOGGER.info("PooledConnectionFactory initializing.");
         cf.setConnectionFactory(new ActiveMQConnectionFactory(JmsConstant.URL));
         cf.setMaxConnections(MAX_CONNECTION);
         cf.setMaximumActiveSessionPerConnection(MAX_SESSION);
         cf.setBlockIfSessionPoolIsFull(true);
         cf.setIdleTimeout(IDLE_TIME_OUT);
         cf.setExpiryTimeout(EXPIRY_TIME_OUT);
-        LOGGER.info("ConnectionFactory initialized.");
     }
 
     public static Connection getConnection() {
