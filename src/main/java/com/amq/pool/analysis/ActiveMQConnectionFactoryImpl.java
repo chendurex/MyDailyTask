@@ -67,15 +67,29 @@ package com.amq.pool.analysis;
  * 5.18，useRetroactiveConsumer：是否启用溯源消息，默认false。在 non-durable topic subscribers订阅topic时，topic之前发送的
  *       消息是否也推送给当前consumer
  *
- * 5.19，optimizeAcknowledge：是否批量响应请求：默认false。如果开启，那么会批量的响应broker的消费请求。在要求可靠性的时，还是不要开启
+ * 5.19，optimizeAcknowledge：是否开启批量发送broker ack请求：默认false。
+ *      AUTO_ACKNOWLEDGE方式的根本意义是“延迟确认”，消费者端在处理消息后暂时不会发送ACK标示，
+ *      而是把它缓存在连接会话的一个pending 区域，等到这些消息的条数达到一定的值（或者等待时间超过设置的值），
+ *      再通过一个ACK指令告知服务端这一批消息已经处理完成；而optimizeACK选项（指明AUTO_ACKNOWLEDGE采用“延迟确认”方式）
+ *      只有当消费者端使用AUTO_ACKNOWLEDGE方式时才会起效
  *
  * 5.20，optimizedMessageDispatch：是否扩充prefetch最大值，默认true。如果消费能力非常的高，则提高prefetch的缓存内容以达到
  *       更高的吞吐量(仅限于 durable topic subscribers)
  *
+ * 5.21，optimizeAcknowledgeTimeOut：批量发送broker ack，默认300ms。默认确认机制为：
+ *       “延迟确认”的数量阀值：prefetch * 0.65
+ *       “延迟确认”的时间阀值：optimizeAcknowledgeTimeOut
+ *
+ * 5.21，optimizedAckScheduledAckInterval：消息确认周期，默认0表示没有周期。每次向broker发送ack后，下一次发送ack的间隔时间
+ *
  * 5.21，useCompression：是否启用压缩消息体，默认false。如果发送的消息非常的大的话，可以启用压缩的消息
  *
- * 5.22，producerWindowSize：每次发送消息的大小，默认0，就是不限制。如果数据量比较大，而且频繁非常高，会导致oom异常。
- *       在这样的场景下，可以由客户端控制消息大小。http://activemq.apache.org/producer-flow-control.html
+ * 5.22，producerWindowSize：broker最多存储的消息大小，默认0，表示不限制。当consumer消费能力很低，而producer生产能力很高，
+ *       这个会导致broker堆积大量的消息，一旦达到一定的阙值，会导致broker oom异常
+ *       配置当前属性，那么会最大限制broker存储某个消息的阙值，防止OOM异常，这样配置了后，producer控制配置producer-flow-control控制：
+ *       1）直接抛出jms异常，然后让producer自行控制处理
+ *       2）producer发送ack时，显式的提示需要减缓生产速度
+ *       客户端控制策略地址：http://activemq.apache.org/producer-flow-control.html
  *
  * 5.23，copyMessageOnSend：是否发送一个消息的副本给broker，默认true。如果设置为true，那么每次都是复制了一份message的副本给
  *       broker，保证原始的message的不可变性。(这里我也没明白为什么要复制一个副本，跟踪到源码后，发现仅仅是设置了一些感觉没用
