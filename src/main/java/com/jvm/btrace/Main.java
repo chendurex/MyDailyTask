@@ -1,7 +1,5 @@
 package com.jvm.btrace;
 
-import org.junit.Test;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,7 +16,7 @@ public class Main {
         for(;;) {
             setName("chen:"+sdf.format(new Date()));
             getName();
-            TimeUnit.SECONDS.sleep(3);
+            TimeUnit.SECONDS.sleep(10);
             System.out.println(btraceData.toString());
         }
     }

@@ -14,7 +14,7 @@ public class ReturnDemo {
             location = @Location(value = Kind.RETURN))
     public static void run(@ProbeClassName String className,
                            @ProbeMethodName String probeMethodName,
-                           //@TargetMethodOrField(fqn = true) String targetMethod,不能使用打印详细方法信息的注解，因为次注解只支持Kind.CALL, Kind.FIELD_GET and Kind.FIELD_SET
+                           //@TargetMethodOrField(fqn = true) String targetMethod,不能使用打印详细方法信息的注解，因为此注解只支持Kind.CALL, Kind.FIELD_GET and Kind.FIELD_SET
                            @Return Object obj) {
         println(Strings.concat(className,Strings.concat(".",Strings.concat(probeMethodName,Strings.concat("--->return value:",Strings.str(obj))))));
     }

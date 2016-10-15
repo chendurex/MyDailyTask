@@ -16,6 +16,7 @@ public class BtraceData {
 
     public void setName(String name) {
         this.name = name;
+        map.clear();
         map.put(name, name);
     }
     public String getName() {
