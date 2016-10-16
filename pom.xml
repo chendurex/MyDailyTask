@@ -153,6 +153,25 @@
                 </compilerArgs>-->
             </configuration>
         </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>copy-dependencies</id>
+                    <phase>prepare-package</phase>
+                    <goals>
+                        <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        <overWriteReleases>false</overWriteReleases>
+                        <overWriteSnapshots>false</overWriteSnapshots>
+                        <overWriteIfNewer>true</overWriteIfNewer>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
         <!--构建可执行jar-->
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -163,11 +182,12 @@
                     <manifest>
                         <addClasspath>true</addClasspath>
                         <classpathPrefix>lib/</classpathPrefix>
-                        <mainClass>com.jvm.btrace.Main</mainClass>
+                        <!--<mainClass>com.jvm.btrace.Main</mainClass>-->
+                        <mainClass>com.jvm.instrument.test.MonitorAssign</mainClass>
                     </manifest>
                     <manifestEntries>
                         <Premain-Class>com.jvm.instrument.HotAgent</Premain-Class>
-                        <Can-Redefine-Classes>false</Can-Redefine-Classes>
+                        <Can-Redefine-Classes>true</Can-Redefine-Classes>
                         <Agent-Class>com.jvm.instrument.HotAgent</Agent-Class>
                         <Can-Retransform-Classes>true</Can-Retransform-Classes>
                     </manifestEntries>

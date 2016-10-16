@@ -6,7 +6,7 @@ package com.jvm.instrument.test;
 public class MonitorObj {
     private String name;
     public  String  show(){
-        return "hi!"+name+",this is test";
+        return "hi!"+ name +",this is test";
     }
     public void setName(String name) {
         this.name = name;
