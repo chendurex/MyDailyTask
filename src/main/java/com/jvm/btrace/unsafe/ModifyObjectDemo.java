@@ -23,7 +23,7 @@ public class ModifyObjectDemo {
                     @ProbeMethodName String methodName,
                            AnyType[] anyTypes) throws Exception{
         println("current className is:" + className +
-                ",and methodName isL" + methodName +
+                ",and methodName is:" + methodName +
                 ",and argument is:" + anyTypes);
         if (anyTypes.length == 1 && anyTypes[0] instanceof BtraceData) {
             BtraceData btraceData = (BtraceData)anyTypes[0];
