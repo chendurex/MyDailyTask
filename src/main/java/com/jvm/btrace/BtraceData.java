@@ -22,4 +22,10 @@ public class BtraceData {
     public String getName() {
         return map.get(name);
     }
+
+    public void setThis(BtraceData btraceData) {
+        this.name = btraceData.name;
+        this.age = btraceData.age;
+        this.gender = btraceData.gender;
+    }
 }

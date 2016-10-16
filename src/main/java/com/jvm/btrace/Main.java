@@ -17,12 +17,13 @@ public class Main {
             setName("chen:"+sdf.format(new Date()));
             getName();
             TimeUnit.SECONDS.sleep(10);
+            setBtraceData(btraceData);
             System.out.println(btraceData.toString());
         }
     }
 
     public static void setBtraceData(BtraceData btraceData) {
-        Main.btraceData = btraceData;
+        Main.btraceData.setThis(btraceData);
     }
     public static BtraceData getBtraceData() {
         return btraceData;

@@ -1,6 +1,5 @@
-package com.jvm.btrace.safe_mode;
+package com.jvm.btrace.safe;
 
-import com.sun.btrace.BTraceUtils;
 import com.sun.btrace.annotations.*;
 import static com.sun.btrace.BTraceUtils.*;
 

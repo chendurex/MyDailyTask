@@ -1,4 +1,4 @@
-package com.jvm.btrace.safe_mode;
+package com.jvm.btrace.safe;
 
 import com.sun.btrace.annotations.BTrace;
 import com.sun.btrace.annotations.OnMethod;

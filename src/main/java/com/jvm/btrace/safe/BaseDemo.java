@@ -1,5 +1,4 @@
-package com.jvm.btrace.safe_mode;
-
+package com.jvm.btrace.safe;
 import static com.sun.btrace.BTraceUtils.*;
 import com.sun.btrace.annotations.*;
 /**
@@ -13,5 +12,4 @@ public class BaseDemo {
                            @ProbeMethodName String probeMethod) {
         println(Strings.concat(className,Strings.concat(".",probeMethod)));
     }
-
 }
