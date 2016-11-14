@@ -8,12 +8,11 @@ import org.objectweb.asm.Opcodes;
 
 /**
  * @author chen
- * @description TODO
+ * @description
  * @pachage com.jvm.asm.owner
  * @date 2016/5/13 20:52
  */
 public class ChangeClassVersion  extends ClassLoader{
-    public static final String classUrl = "D:\\dayhr_project\\MyDailyTask\\target\\classes\\com\\classloader\\ClassloaderSub.class";
     public Class defineClass(String name, byte[] b){
         return defineClass(name, b, 0, b.length);
     }
@@ -25,7 +24,7 @@ public class ChangeClassVersion  extends ClassLoader{
 
     public void change() throws Exception{
         ClassReader classReader = new ClassReader(getClass().getResourceAsStream("ChangeClassVersion.class"));
-        ClassWriter classWriter = new ClassWriter(0);
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         ClassVisitor classVisitor = new ChangeVisitor(Opcodes.ASM4,classWriter);
         classReader.accept(classVisitor,0);
         byte []b = classWriter.toByteArray();

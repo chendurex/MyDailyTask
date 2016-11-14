@@ -5,7 +5,7 @@ import org.objectweb.asm.*;
 import static org.objectweb.asm.Opcodes.*;
 /**
  * @author chen
- * @description TODO
+ * @description
  * @pachage com.jvm.asm.owner
  * @date 2016/5/11 9:36
  */

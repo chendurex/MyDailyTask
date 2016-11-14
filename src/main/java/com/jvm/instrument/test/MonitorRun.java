@@ -7,7 +7,7 @@ public class MonitorRun {
     public static void main(String[] args) throws InterruptedException {
         MonitorObj obj = new MonitorObj();
         obj.setName("chendurex");
-        while (true) {
+        for(;;) {
             System.out.println(obj.show());
             obj.show();
             Thread.sleep(20000);
