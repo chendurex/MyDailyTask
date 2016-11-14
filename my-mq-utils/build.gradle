@@ -1,4 +1,4 @@
-group 'com.mq.utils'
+group 'com.mq.util'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
