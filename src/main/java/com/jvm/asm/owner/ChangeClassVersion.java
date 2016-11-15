@@ -13,7 +13,6 @@ import org.objectweb.asm.Opcodes;
  * @date 2016/5/13 20:52
  */
 public class ChangeClassVersion  extends ClassLoader{
-    public static final String classUrl = "D:\\dayhr_project\\MyDailyTask\\target\\classes\\com\\classloader\\ClassloaderSub.class";
     public Class defineClass(String name, byte[] b){
         return defineClass(name, b, 0, b.length);
     }
