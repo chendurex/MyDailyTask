@@ -10,7 +10,7 @@ import org.objectweb.asm.tree.MethodNode;
 
 /**
  * @author chen
- * @description TODO
+ * @description
  * @pachage com.jvm.asm.owner
  * @date 2016/5/23 9:08
  */

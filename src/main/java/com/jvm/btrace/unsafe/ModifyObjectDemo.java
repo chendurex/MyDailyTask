@@ -7,9 +7,6 @@ import com.sun.btrace.annotations.OnMethod;
 import com.sun.btrace.annotations.ProbeClassName;
 import com.sun.btrace.annotations.ProbeMethodName;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static com.sun.btrace.BTraceUtils.*;
 
 /**

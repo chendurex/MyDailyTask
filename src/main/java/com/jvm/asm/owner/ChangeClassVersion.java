@@ -24,7 +24,7 @@ public class ChangeClassVersion  extends ClassLoader{
 
     public void change() throws Exception{
         ClassReader classReader = new ClassReader(getClass().getResourceAsStream("ChangeClassVersion.class"));
-        ClassWriter classWriter = new ClassWriter(0);
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         ClassVisitor classVisitor = new ChangeVisitor(Opcodes.ASM4,classWriter);
         classReader.accept(classVisitor,0);
         byte []b = classWriter.toByteArray();
