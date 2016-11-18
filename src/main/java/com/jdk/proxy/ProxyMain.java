@@ -33,6 +33,8 @@ public class ProxyMain extends ClassLoader {
                 .newInstance(new Object[] {new ProxyObject(comparableTest)});
         System.out.println(comparable2.compareTo("test2"));
 
+        Comparable comparable3 = new $Proxy0(new ProxyObject(comparableTest));
+        System.out.println(comparable3.compareTo("test2"));
       //  byte[] b = ProxyGenerator.generateProxyClass("com.sun.proxy.$Proxy0", new Class[] {Comparable.class});
        // FileOutputStream fos = new FileOutputStream(new File("d:\\$Proxy0.class"));
         //fos.write(b);
