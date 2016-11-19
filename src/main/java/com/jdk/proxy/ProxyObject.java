@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 
 /**
  * @author chen
- * @description TODO
+ * @description
  * @pachage com.jdk.proxy
  * @date 2016/5/24 19:58
  */
@@ -17,7 +17,7 @@ public class ProxyObject<T> implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         System.out.println("---------------proxy enter------------------------");
-        System.out.println("method is : "+method.getName());
+        System.out.println("method is : " + method.getName());
         StringBuilder sb = new StringBuilder();
         if (args != null) {
             sb.append("args is :");
