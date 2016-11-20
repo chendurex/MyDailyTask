@@ -1,4 +1,4 @@
-package com.jvm.asm.owner;
+package com.jvm.asm.demo;
 
 import org.objectweb.asm.ClassWriter;
 
@@ -22,7 +22,7 @@ public class ClassWriterDemo extends ClassLoader{
 
     public static void main(String[] args) throws Exception{
         ClassWriterDemo classWriterDemo = new ClassWriterDemo();
-        System.out.println(classWriterDemo.loadClass("com.jvm.asm.owner.ClassWriterDemo"));
+        System.out.println(classWriterDemo.loadClass("com.jvm.asm.demo.ClassWriterDemo"));
     }
     public byte[] writeClass() {
         ClassWriter cw = new ClassWriter(0);

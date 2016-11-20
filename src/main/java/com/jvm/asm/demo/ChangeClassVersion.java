@@ -1,4 +1,4 @@
-package com.jvm.asm.owner;
+package com.jvm.asm.demo;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -28,7 +28,7 @@ public class ChangeClassVersion  extends ClassLoader{
         ClassVisitor classVisitor = new ChangeVisitor(Opcodes.ASM4,classWriter);
         classReader.accept(classVisitor,0);
         byte []b = classWriter.toByteArray();
-        defineClass("com.jvm.asm.owner.ChangeClassVersion", b);
+        defineClass("com.jvm.asm.demo.ChangeClassVersion", b);
     }
 
     static class ChangeVisitor extends ClassVisitor{

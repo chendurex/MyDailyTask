@@ -1,4 +1,4 @@
-package com.jvm.asm.owner;
+package com.jvm.asm.demo;
 
 import org.objectweb.asm.*;
 
@@ -58,7 +58,7 @@ public class ClassPrinter extends ClassVisitor {
     public static void main(String[] args) throws Exception{
         ClassPrinter cp = new ClassPrinter();
         //ClassReader cr = new ClassReader("java.lang.Runnable");
-        ClassReader cr = new ClassReader("com.jvm.asm.owner.VisitOrderDemo");
+        ClassReader cr = new ClassReader("com.jvm.asm.demo.VisitOrderDemo");
         cr.accept(cp, 0);
     }
 }
