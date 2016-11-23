@@ -1,4 +1,4 @@
-package com.dayhr.config;
+package com.properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

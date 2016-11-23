@@ -1,4 +1,4 @@
-package com.dayhr.config;
+package com.properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
  * @pachage com.dayhr.config
  * @date 2016/8/31 10:46
  */
-public class DayhrDefaultConnectionConfig {
-    private static final DayhrDefaultConnectionConfig DEFAULT_CONNECTION_CONFIG = new DayhrDefaultConnectionConfig();
-    static Logger LOGGER = LoggerFactory.getLogger(DayhrDefaultConnectionConfig.class);
+public class LoadConfigDemo {
+    private static final LoadConfigDemo DEFAULT_CONNECTION_CONFIG = new LoadConfigDemo();
+    static Logger LOGGER = LoggerFactory.getLogger(LoadConfigDemo.class);
     private boolean isPrintConfigProperties;
     private int maxConnections;
     private int maximumActiveSessionPerConnection;
@@ -20,9 +20,9 @@ public class DayhrDefaultConnectionConfig {
     private long blockIfSessionPoolIsFullTimeout;
     private boolean reconnectOnException;
 
-    private DayhrDefaultConnectionConfig() {}
+    private LoadConfigDemo() {}
 
-    public static DayhrDefaultConnectionConfig getInstance() {
+    public static LoadConfigDemo getInstance() {
         return DEFAULT_CONNECTION_CONFIG;
     }
     {
@@ -37,6 +37,10 @@ public class DayhrDefaultConnectionConfig {
         } catch (Exception e) {
             LOGGER.error("获取configProp属性失败，堆栈信息为：", e);
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(LoadConfigUtils.printConfigValue(DEFAULT_CONNECTION_CONFIG));
     }
 
     public int getMaxConnections() {
