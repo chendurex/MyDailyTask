@@ -1,4 +1,4 @@
-package com.jvm.asm.owner;
+package com.jvm.asm.demo;
 
 import static org.objectweb.asm.Opcodes.*;
 

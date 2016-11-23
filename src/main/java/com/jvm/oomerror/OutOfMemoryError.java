@@ -1,10 +1,8 @@
-package com.jvm.out_of_memory_error;
+package com.jvm.oomerror;
 
 import org.junit.Test;
-import sun.misc.Unsafe;
 import sun.net.www.protocol.jar.URLJarFile;
 import java.io.File;
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
