@@ -9,7 +9,10 @@ package com.algorithms;
 public class Task {
 
     public static void main(String[] args) {
-        System.out.println(is2NPowerForNumber(1024));
+        Integer number = 31230000;
+        System.out.println(obtainOneNumberCountOfBinary(number));
+        System.out.println(Integer.toBinaryString(number));
+       // System.out.println(7 & 4);
     }
 
     /**
@@ -41,5 +44,23 @@ public class Task {
      */
     public static boolean is2NPowerForNumber(int number) {
         return (number & (number -1)) == 0;
+    }
+
+    /**
+     * 获取某个数的二进制位中1的个数
+     * 实现方案：将每个数的尾数与1求与运算
+     * @param number
+     * @return
+     */
+    public static int obtainOneNumberCountOfBinary(int number) {
+        int count = 0;
+        int curNumber = number;
+        do {
+            if ((curNumber & 1) == 1) {
+                count ++;
+            }
+            curNumber >>= 1;
+        } while (curNumber != 0);
+        return count;
     }
 }
