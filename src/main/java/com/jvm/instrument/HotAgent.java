@@ -1,7 +1,10 @@
 package com.jvm.instrument;
 
 /**
- * Created by Administrator on 2016/5/28.
+ * @author chen
+ * @description
+ * @pachage com.jvm.instrument
+ * @date 2016/05/22 22:06
  */
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
@@ -31,7 +34,7 @@ import java.util.Timer;
 public  class  HotAgent {
     /**
      * 跟随jvm启动而启动，方法类似main方法，启动顺序在jvm启动后，main执行之前
-     * 需要在 MANIFEST.MF 文件指定Premain-Class属性，这样jvm会自动需要当前方法，此属性是类名，不是文件名或路径
+     * 需要在 MANIFEST.MF 文件指定Premain-Class属性，这样jvm会自动执行当前方法，此属性是类名，不是文件名或路径
      * 如何把参数打包到MANIFEST.MF 内，可以参考maven打包jar配置
      * 主要用于在JVM启动时开启代理，如果需要运行时开启代理则使用agentmain方法
      * 启动方式：java -javaagent:xxxx.jar [= 传入 premain 的参数 ] 注：如果有多个参数，则自己采用一种方式分解
@@ -51,7 +54,7 @@ public  class  HotAgent {
      * 需要在 MANIFEST.MF 文件指定Agent-Class属性，jvm在运行时会运行此方法，此属性是类名，不是文件名或路径
      * 在执行时，可能会出现no provided错误，这个是因为jre本身未提供tools.jar，并且需要依赖java其它的jar，
      * 所以显式传入classpath时指定tools.jar和jre提供的所有jar
-     * 此方法只有是jvm启动时只运行一次
+     * 此方法只有是jvm启动后只运行一次
      * @param agentArgs
      * @param inst
      * @throws Exception
@@ -77,11 +80,12 @@ public  class  HotAgent {
      * @param inst
      */
     private static void run(String  agentArgs, Instrumentation  inst) {
-        ClassFileTransformer  transformer =new ClassTransform(inst);
+        ClassFileTransformer  transformer = new ClassTransform(inst);
+       // ClassFileTransformer  transformer = new ClassWriter(inst);
         inst.addTransformer(transformer,true);
         System.out.println("是否支持类的重定义："+inst.isRedefineClassesSupported());
         System.out.println("是否支持类转换："+inst.isRetransformClassesSupported());
-        Timer  timer=new  Timer();
+        Timer  timer = new  Timer();
         timer.schedule(new ReloadTask(inst),10000,30000);
     }
 }

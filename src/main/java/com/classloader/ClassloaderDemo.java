@@ -4,11 +4,11 @@ import java.io.*;
 
 /**
  * @author chen
- * @description TODO
+ * @description
  * @pachage com.classloader
  * @date 2016/4/28 9:20
  */
-public class FindClassloader extends ClassLoader {
+public class ClassloaderDemo extends ClassLoader {
     public static final String classUrl = "D:\\dayhr_project\\MyDailyTask\\target\\classes\\com\\classloader\\ClassloaderSub.class";
 
     @Override
@@ -17,7 +17,7 @@ public class FindClassloader extends ClassLoader {
             try {
                 InputStream is = new FileInputStream(new File(classUrl));
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                int data  = 0;
+                int data;
                 while ((data = is.read()) != -1) {
                     bos.write(data);
                 }
@@ -34,7 +34,7 @@ public class FindClassloader extends ClassLoader {
 
 
     public void newInstance() {
-        FindClassloader findClassloader =  new FindClassloader();
+        ClassloaderDemo findClassloader =  new ClassloaderDemo();
         try {
             Class<?> cls = findClassloader.loadClass("com.classloader.ClassloaderSub");
             ClassloaderObj obj = (ClassloaderObj)cls.newInstance();
@@ -44,8 +44,9 @@ public class FindClassloader extends ClassLoader {
             e.printStackTrace();
         }
     }
+
     public static void main(String[] args) {
-        FindClassloader findClassloader = new FindClassloader();
+        ClassloaderDemo findClassloader = new ClassloaderDemo();
         findClassloader.newInstance();
     }
 

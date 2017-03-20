@@ -1,7 +1,10 @@
 package com.jvm.instrument;
 
 /**
- * Created by Administrator on 2016/5/28.
+ * @author chen
+ * @description
+ * @pachage com.jvm.instrument
+ * @date 2016/05/22 22:06
  */
 
 import com.jvm.instrument.test.MonitorObj;
@@ -39,8 +42,7 @@ public class ClassTransform implements ClassFileTransformer {
         try {
 
             ClassPool classPool = ClassPool.getDefault();
-            CtClass ctClass = classPool.makeClass(new ByteArrayInputStream(
-                    classfileBuffer));
+            CtClass ctClass = classPool.makeClass(new ByteArrayInputStream(classfileBuffer));
             CtMethod[] methods = ctClass.getDeclaredMethods();
             for (CtMethod method : methods) {
                 method.addLocalVariable("startTime", CtClass.longType);

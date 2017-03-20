@@ -1,5 +1,8 @@
 package com.mybatis;
 
+import com.mybatis.bean.TestBean;
+import com.mybatis.bean.TestBean2;
+
 import java.beans.Introspector;
 import java.lang.reflect.Field;
 import java.util.Set;

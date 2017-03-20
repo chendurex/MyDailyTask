@@ -1,4 +1,4 @@
-package com.jvm.cglib.method_delegate;
+package com.jvm.cglib.method.delegate;
 
 /**
  * @author chen

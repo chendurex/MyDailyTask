@@ -1,4 +1,4 @@
-package com.mybatis;
+package com.mybatis.bean;
 
 import lombok.Data;
 

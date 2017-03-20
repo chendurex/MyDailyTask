@@ -1,4 +1,4 @@
-package com.jvm.check_of_memory_use;
+package com.jvm.memory.use;
 
 
 import java.text.DateFormat;

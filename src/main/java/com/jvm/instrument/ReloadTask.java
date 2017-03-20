@@ -1,7 +1,10 @@
 package com.jvm.instrument;
 
 /**
- * Created by Administrator on 2016/5/28.
+ * @author chen
+ * @description
+ * @pachage com.jvm.instrument
+ * @date 2016/05/22 22:06
  */
 
 import java.io.InputStream;
@@ -49,7 +52,7 @@ public class ReloadTask extends TimerTask {
 
     private byte[] loadClassBytes(Class cls, String clsname) throws Exception {
         System.out.println("当前加载的类名称："+clsname+"====class对象是："+cls);
-        InputStream is = cls.getClassLoader().getSystemClassLoader().getResourceAsStream(clsname);
+        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(clsname);
         if (is == null) return null;
         byte[] bt = new byte[is.available()];
         is.read(bt);

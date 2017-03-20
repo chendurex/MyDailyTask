@@ -1,7 +1,10 @@
 package com.jvm.instrument.test;
 
 /**
- * Created by Administrator on 2016/5/29.
+ * @author chen
+ * @description
+ * @pachage com.jvm.instrument.test
+ * @date 2016/05/22 22:06
  */
 public class MonitorObj {
     private String name;
