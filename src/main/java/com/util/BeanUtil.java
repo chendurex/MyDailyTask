@@ -12,7 +12,6 @@ import java.util.List;
 /**
  * @author chen
  * @description
- * @pachage com.dayhr.web.module.hr.time.attendance.common
  * @date 2016/8/2 15:31
  */
 public final class BeanUtil {

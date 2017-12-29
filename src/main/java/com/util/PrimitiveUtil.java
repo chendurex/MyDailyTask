@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 /**
  * @author chen
  * @description 原始类型与包装类型互换以及效验工具
- * @pachage com.dayhr.web.module.hr.time.attendance.common
  * @date 2016/5/5 11:41
  */
 public class PrimitiveUtil {
