@@ -19,13 +19,31 @@ public class ReflectObj <T>{
     private Integer ages;
     public String gender;
     private T he;
+    private static String value = "wodiu";
 
-    private ReflectObj ( String name){}
-
-    public void say() {
-        System.out.println("no parameter args");
+    public ReflectObj(String name, Integer age) {
+        this.name = name;
+        this.age = age;
     }
-    private void say(String name){
+
+    private ReflectObj (String name) {
+        this.name = name;
+    }
+
+    public String say() {
+        System.out.println("no parameter args");
+        return "say";
+    }
+    private String say(String name){
         System.out.println("has parameter args "+ name);
+        return name;
+    }
+
+    private void vm() {
+
+    }
+
+    private static String boot() {
+        return "enter";
     }
 }
