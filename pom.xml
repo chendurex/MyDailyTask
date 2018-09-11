@@ -153,6 +153,17 @@
             <artifactId>joor-java-8</artifactId>
             <version>0.9.9</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>1.21</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <version>1.21</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 
@@ -164,8 +175,8 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.1</version>
             <configuration>
-                <source>1.7</source>
-                <target>1.7</target>
+                <source>1.8</source>
+                <target>1.8</target>
                 <encoding>UTF-8</encoding>
                 <!--打印编译详细信息-->
                 <!--<compilerArgs>
