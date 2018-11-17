@@ -28,4 +28,9 @@ public class BtraceData {
         this.age = btraceData.age;
         this.gender = btraceData.gender;
     }
+
+    public BtraceData copy(String name) {
+        this.name = name;
+        return this;
+    }
 }

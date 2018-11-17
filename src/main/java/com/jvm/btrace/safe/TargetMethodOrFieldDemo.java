@@ -17,6 +17,6 @@ public class TargetMethodOrFieldDemo {
     public static void run(@ProbeClassName String className,
                            @ProbeMethodName String probeMethod,
                            @TargetMethodOrField(fqn = true) String targetMethod) {
-        println(Strings.concat(className, Strings.concat(".",Strings.concat(probeMethod,Strings.concat("-->",targetMethod)))));
+        println(className +"." + probeMethod + "-->" + targetMethod);
     }
 }

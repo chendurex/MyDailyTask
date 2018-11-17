@@ -10,14 +10,16 @@ import java.util.concurrent.TimeUnit;
  */
 public class Main {
     private static BtraceData btraceData;
-    private static DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static void main(String []args) throws Exception{
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for(;;) {
             setName("chen:"+sdf.format(new Date()));
             getName();
             TimeUnit.SECONDS.sleep(10);
             setBtraceData(btraceData);
+            btraceData.copy("copy:"+sdf.format(new Date()));
+
             System.out.println(btraceData.toString());
         }
     }
