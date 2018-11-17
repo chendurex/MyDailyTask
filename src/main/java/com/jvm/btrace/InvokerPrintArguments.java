@@ -1,4 +1,4 @@
-package com.jvm.btrace.news;
+package com.jvm.btrace;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -29,14 +29,23 @@ public class InvokerPrintArguments {
     public static void main(String[] args) throws Exception {
         InvokerPrintArguments invoker = new InvokerPrintArguments();
         for (; ; ) {
+            // print primitive value
             invoker.printPrimitive((byte)1, (short)2, 3, 4, 5.00, 6.0f, true, '8');
+
+            // print boxed primitive value
             invoker.printBoxedPrimitive((byte)1, (short)2, 3, 4L, 5.00, 6.0f, true, '8');
+
+            // print collection value
             invoker.printCollection(Arrays.asList(1,2,3,4), ImmutableMap.of(1,1, 2, 2, 3,3));
+
+            Map<Integer, Integer> i = new HashMap<>();
+            i.put(1, 1);
+            // print complicated value
             PrintableMetadata printableMetadata = PrintableMetadata.builder()
                     .intV(1).boolV(true).charV((char)2).doubV(3.00).sV("4").intBoxedV(5).boolBoxedV(true).charBoxedV((char)6).doubBoxedV(7.00)
                     .listV(Arrays.asList(1, 2, 3))
-                    .mapV(ImmutableMap.of(1, 1, 2, 2))
-                    .lmv(Collections.<Map<Integer, Integer>>singletonList(ImmutableMap.of(3, 3)))
+                    .mapV(i)
+                    .lmv(Collections.singletonList(ImmutableMap.of(3, 3, 4, 4)))
                     .mlv(ImmutableMap.of(4, Collections.singletonList(4)))
                     .stub(PrintableMetadata.Stub.builder().intV(1)
                             .subStub(PrintableMetadata.SubStub.builder().intV(11)

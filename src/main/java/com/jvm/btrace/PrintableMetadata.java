@@ -1,4 +1,4 @@
-package com.jvm.btrace.news;
+package com.jvm.btrace;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,7 +34,7 @@ public class PrintableMetadata {
     private Map<Integer, List<Integer>> mlv = new HashMap<>();
     private Stub stub;
     private List<Stub> lstub = new ArrayList<>();
-
+    private static int staticV = 11111111;
 
     @Data
     @Builder
