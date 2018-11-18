@@ -2,6 +2,9 @@ package com.jvm.arthas;
 
 /**
  * https://alibaba.github.io/arthas/advice-class.html
+ * https://github.com/alibaba/arthas/issues/71
+ * OGNL表达式
+ * https://commons.apache.org/proper/commons-ognl/language-guide.html
  * @author chendurex
  * @date 2018-11-18 16:17
  */

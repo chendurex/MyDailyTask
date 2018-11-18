@@ -3,8 +3,6 @@ package com.jvm.arthas;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 支持各种OGNL表达式
- * https://commons.apache.org/proper/commons-ognl/language-guide.html
  * 监控方法执行情况，
  * @author chendurex
  * @date 2018-11-18 14:55
