@@ -113,6 +113,30 @@ public class ParamsAndReturn {
     }
 
     /**
+     * 监控参数内容为666的请求
+     * watch com.jvm.arthas.ParamsAndReturn subStub '{params,returnObj}' 'params[0].intV==666' -x 2 -b
+     * 如果方法有重载，则监控参数长度为1的请求
+     * watch com.jvm.arthas.ParamsAndReturn subStub '{params,returnObj}' 'params.length==1' -x 2 -b
+     * 监控参数长度为1，请求内容为666的请求
+     * watch com.jvm.arthas.ParamsAndReturn subStub '{params,returnObj}' 'params.length==1 && params[0].intV==666'  -x 2 -b -f
+     * 监控参数长度为1，返回内容不为空而且intV的值是111的请求
+     * watch com.jvm.arthas.ParamsAndReturn subStub '{params,returnObj}' 'params.length==1 && returnObj.intV==111'  -x 2 -f
+     * 监控参数长度为1，返回内容不为空而且intV的值是111的请求(由于增加了入参和出参，所以会监控两条数据，但是入参的那条数据返回值为null，所以需要判断下)
+     * watch com.jvm.arthas.ParamsAndReturn subStub '{params,returnObj}' 'params.length==1 && returnObj!=null && returnObj.intV==111'  -x 2 -f
+     * 监控请求参数为666或者返回内容为111的请求(会返回两条数据，第一条数据是入参的内容，第二条是出参的内容)
+     * watch com.jvm.arthas.ParamsAndReturn subStub '{params,returnObj}' 'params.length==1 && (params[0].intV==666 or (returnObj!=null && returnObj.intV==111 )) '  -x 2 -b -f
+     * 监控请求参数中map包含key为1的，并且返回值intV=111的请求(因为条件严格限制了，所以只能打印返回内容，无法打印入参了)
+     * watch com.jvm.arthas.ParamsAndReturn subStub '{params,returnObj}' 'params.length==1 && (params[0].map.containsKey(1) && (returnObj!=null && returnObj.intV==111 )) '  -x 2 -f
+     * @param subStub
+     * @return
+     */
+    private Metadata.SubStub subStub(Metadata.SubStub subStub) {
+        subStub.setIntV(111);
+        subStub.setList(Arrays.asList(1,2,3));
+        return subStub;
+    }
+
+    /**
      * 监控抛出异常
      * watch com.jvm.arthas.ParamsAndReturn throwExp "{params, throwExp}"  -e -x 2
      */
@@ -152,6 +176,11 @@ public class ParamsAndReturn {
 
             invoker.map(Arrays.asList(1,2,3,4), new HashMap<>(ImmutableMap.of(1,1, 2, 2, 3,3)));
             invoker.getInstanceField();
+            Metadata.SubStub subStub = new Metadata.SubStub();
+            subStub.setList(Arrays.asList(4, 4, 4));
+            subStub.setIntV(666);
+            subStub.setMap(ImmutableMap.of(1,1, 2, 2, 3,3));
+            invoker.subStub(subStub);
             try {
                 invoker.throwExp();
             } catch (Exception e) {
