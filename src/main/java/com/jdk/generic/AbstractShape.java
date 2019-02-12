@@ -14,17 +14,15 @@ abstract class AbstractShape<A extends AbstractShape<A, B>, B extends Collection
      * 通过定义泛型的方式让子类获取自身实现而不是父类
      * @return A
      */
-    abstract A self();
+    @SuppressWarnings("unchecked")
+    A self() {
+        return (A)this;
+    }
 
     abstract void say(B b);
 }
 
 class Rectangle extends AbstractShape<Rectangle, List<String>>{
-
-    @Override
-    Rectangle self() {
-        return this;
-    }
 
     void rec() {
 
@@ -37,10 +35,6 @@ class Rectangle extends AbstractShape<Rectangle, List<String>>{
 }
 
 class Square extends AbstractShape<Square, Queue<String>> {
-    @Override
-    Square self() {
-        return this;
-    }
 
     void square() {
 
