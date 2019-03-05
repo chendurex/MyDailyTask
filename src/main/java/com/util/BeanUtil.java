@@ -1,10 +1,14 @@
 package com.util;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -102,5 +106,9 @@ public final class BeanUtil {
 
     public static <T> List<T> parseArray(String text, Class<T> clazz) {
         return JSON.parseArray(text, clazz);
+    }
+
+    public static <T> T parser(InputStream in, Type type) throws IOException {
+        return JSON.parseObject(in, type);
     }
 }
