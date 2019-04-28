@@ -1,18 +1,23 @@
 package com.concurrent;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author cheny.huang
  * @date 2019-03-21 11:00.
  */
+@Slf4j
 public class CompletableFutrueExample {
     @Test
     public void testComposeTasks() {
@@ -32,7 +37,7 @@ public class CompletableFutrueExample {
         try {
             CompletableFuture.supplyAsync(() -> {
                 throw new RuntimeException();
-            }).join();
+            }).thenAccept(s-> System.out.println("not enter")).join();
         } catch (RuntimeException e) {
             // ignore
         } catch (Exception e) {
@@ -103,13 +108,54 @@ public class CompletableFutrueExample {
         assertTrue((System.currentTimeMillis()-s)<3100);
     }
 
+    /**
+     * 通过循环的方式批量执行Runnable请求
+     */
+    @Test
+    public void testForeachTasks() {
+        long s = System.currentTimeMillis();
+        List<CompletableFuture<?>> futures = Stream.of(1,2,3,4,5)
+                .map(v->CompletableFuture.runAsync(()-> timeSleep(v))).collect(Collectors.toList());
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()])).join();
+        long elapsed = System.currentTimeMillis() -s;
+        log.info("一共耗时:{}", elapsed);
+        assertTrue(elapsed < 5200);
+        futures.forEach(e->assertTrue(e.isDone()));
+        timeSleep();
+    }
+
+    /**
+     * 通过循环的方式批量执行Callable请求
+     */
+    @Test
+    public void testForeachFutures() {
+        long s = System.currentTimeMillis();
+        List<CompletableFuture<Integer>> futures = Stream.of(1,2,3,4,5)
+                .map(v->CompletableFuture.supplyAsync(()->timeSleep(v))).collect(Collectors.toList());
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()])).join();
+        long elapsed = System.currentTimeMillis() - s;
+        log.info("一共耗时:{}", elapsed);
+        assertTrue(elapsed < 5200);
+        futures.forEach(e->
+        {
+            assertTrue(e.isDone());
+            Arrays.asList(1,2,3,4,5).contains(e.getNow(999));
+            log.info("return  value:{}",e.getNow(999));
+        });
+        timeSleep();
+    }
+
     private int timeSleep(int i) {
         try {
-            TimeUnit.SECONDS.sleep(1);
+            TimeUnit.SECONDS.sleep(i);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return i;
+    }
+
+    private int timeSleep() {
+        return timeSleep(1);
     }
 
     private class CombinedValue{
