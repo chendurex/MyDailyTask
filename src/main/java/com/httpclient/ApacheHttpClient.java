@@ -52,8 +52,7 @@ public class ApacheHttpClient {
                 String param = he.getName();
                 String value = he.getValue();
                 // 如果客户端返回值中带有timeout字段，则以这个字段作为keep-alive时长
-                if (value != null && param.equalsIgnoreCase
-                        ("timeout")) {
+                if (value != null && "timeout".equalsIgnoreCase(param)) {
                     return Long.parseLong(value) * 1000;
                 }
             }
@@ -262,7 +261,9 @@ public class ApacheHttpClient {
         public void run() {
             for (;;) {
                 try {
+                    // 清理过期的连接，即超过keepalive时间的连接或者短连接
                     manager.closeExpiredConnections();
+                    // 清理超过多长时间未通信的连接(会关闭还在keepalive的连接)
                     manager.closeIdleConnections(300, TimeUnit.SECONDS);
                     PoolStats st = manager.getTotalStats();
                     log.info("current pooling connection status,available:{}, max:{}, lease:{}, pending:{}",
