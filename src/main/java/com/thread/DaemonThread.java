@@ -3,6 +3,12 @@ package com.thread;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 1
+ * 2
+ * 3
+ * 4
+ * 5
+ * 6
  * Created by Administrator on 2016/8/20.
  */
 public class DaemonThread extends Thread {
