@@ -22,7 +22,7 @@
         <cglib.version>3.2.2</cglib.version>
         <javassist.versin>3.20.0-GA</javassist.versin>
         <activemq.version>5.14.0</activemq.version>
-        <activemq.qpid.version>0.8.0</activemq.qpid.version>
+        <activemq.qpid.version>0.10.0</activemq.qpid.version>
         <reflections.version>0.9.10</reflections.version>
         <guava.version>19.0</guava.version>
     </properties>
